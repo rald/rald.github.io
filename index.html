@@ -1,69 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-	<title></title>
-
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<style>
-		* {
-			font-family: monospace;
-		}
-
-		html,body {
-			font-size: 12pt;
-			background-color: black;
-			color: white;
-		}
-
-		.post {
-			margin-top: 100px;
-			margin-left: 50px;
-			margin-right: 50px;
-		}
-
-		.post .header {
-			color: orange;
-		}
-
-		.post .title {
-			float: left;
-		}
-
-		.post .date {
-			float: right;
-		}
-
-		.clear {
-			clear: both;
-		}
-
-	</style>
-
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <script src="./audiojs/audio.min.js"></script>
+    <link rel="stylesheet" href="./includes/index.css" media="screen">
+    <script>
+      audiojs.events.ready(function() {
+        audiojs.createAll();
+      });
+    </script>
+	</head>
 	<body>
-
-    <div class="header">
-    	<h1 align="center">My Playground</h1>
-    </div>
-
-		<div class="post">
-			<div class="header">
-				<div class="title">Hello World</div>
-				<div class="date">Sat., Apr. 11, 2020 - 10:24am</div>
-				<div class="clear"></div>
-			</div>
-			<p>The quick brown fox jumps over the lazy dog.</p>
-		</div>
-
-		<div class="post">
-			<div class="header">
-				<div class="title">Hello World</div>
-				<div class="date">Sat., Apr. 11, 2020 - 10:24am</div>
-				<div class="clear"></div>
-			</div>
-			<p>The quick brown fox jumps over the lazy dog.</p>
-		</div>
-
+		<audio src="./music/Jam Morales - Even If.mp3">
 	</body>
-
-</html/>
+</html>
