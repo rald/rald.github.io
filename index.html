@@ -7,7 +7,8 @@
 
 		<audio id="player"></audio>
 		<center>
-			<div id="info" style="font-family:san serif;font-size: 16pt; padding: 20px;"></div>
+			<span id="info" style="font-family:san serif;font-size: 16pt;"></span><br/>
+			<span id="counter" style="font-family:san serif;font-size: 16pt;"></span><br/>
 			<button onclick="play()"><img src="images/play.png" width="32px" height="32px"></button>
 			<button onclick="pause()"><img src="images/pause.png" width="32px" height="32px"></button>
 			<button onclick="stop()"><img src="images/stop.png" width="32px" height="32px"></button>
@@ -21,11 +22,12 @@ var playlist=[
 	"Jam Morales - Even If",
 	"Geneva Cruz - Pangarap Ka",
 	"Smokey Mountain - Kailan",
-	"Tootsie Guevarra - Mahal Ka Sa Akin"
+	"Tootsie Guevara - Mahal Ka Sa Akin"
 ];
 
 var player=document.getElementById("player");
 var info=document.getElementById("info");
+var counter=document.getElementById("counter");
 var currentIndex=0;
 
 function play() {
@@ -66,9 +68,23 @@ function change() {
 	play();
 }
 
-player.onended=next;
+function timer() {
+	counter.innerHTML=
+		toTime(player.currentTime)+" / "+
+		toTime(player.duration);
+}
 
+function toTime(secs) {
+	var sec_num = Math.floor(secs);
+	var minutes = Math.floor(sec_num / 60);
+	var seconds = sec_num - (minutes * 60);
+	if (seconds < 10) seconds = "0"+seconds;
+	return minutes+':'+seconds;
+}
+
+player.onended=next;
 change();
+setInterval(timer,1000/60);
 
 		</script>
 
