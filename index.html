@@ -1,17 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title></title>
-    <meta charset="utf-8">
-    <script src="./audiojs/audio.min.js"></script>
-    <link rel="stylesheet" href="./includes/index.css" media="screen">
-    <script>
-      audiojs.events.ready(function() {
-        audiojs.createAll();
-      });
-    </script>
+<html>
+	<head>
+		<title></title>
 	</head>
 	<body>
-		<audio src="./music/Jam Morales - Even If.mp3">
+
+		<audio id="player"></audio>
+		<center>
+			<div id="info" style="font-family:san serif;font-size: 16pt; padding: 20px;"></div>
+			<button onclick="play()"><img src="images/play.png" width="32px" height="32px"></button>
+			<button onclick="pause()"><img src="images/pause.png" width="32px" height="32px"></button>
+			<button onclick="stop()"><img src="images/stop.png" width="32px" height="32px"></button>
+			<button onclick="prev()"><img src="images/prev.png" width="32px" height="32px"></button>
+			<button onclick="next()"><img src="images/next.png" width="32px" height="32px"></button>
+		</center>
+
+		<script>
+
+var playlist=[
+	"Jam Morales - Even If",
+	"Geneva Cruz - Pangarap Ka",
+	"Smokey Mountain - Kailan",
+	"Tootsie Guevarra - Mahal Ka Sa Akin"
+];
+
+var player=document.getElementById("player");
+var info=document.getElementById("info");
+var currentIndex=0;
+
+function play() {
+	player.play();
+}
+
+function pause() {
+	player.pause();
+}
+
+function stop() {
+	player.pause();
+	player.currentTime=0;
+}
+
+function prev() {
+	if(currentIndex>0) {
+		currentIndex--;
+	} else {
+		currentIndex=playlist.length-1;
+	}
+	change();
+}
+
+function next() {
+	if(currentIndex<playlist.length-1) {
+		currentIndex++;
+	} else {
+		currentIndex=0;
+	}
+	change();
+}
+
+function change() {
+	var currentSong=playlist[currentIndex];
+	player.src="music/"+currentSong+".mp3";
+	info.innerHTML=(currentIndex+1)+". "+currentSong;
+	play();
+}
+
+player.onended=next;
+
+change();
+
+		</script>
+
 	</body>
 </html>
