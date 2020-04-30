@@ -1,14 +1,62 @@
 <html>
 	<head>
 		<title>Santa Nena's Playground</title>
+
+		<style>
+
+			.header {
+				text-align: center;
+			}
+
+			.post {
+				float: left;
+				margin: 32px;
+			}
+
+			.post .video {
+				width: 256px;
+			}
+
+			.post video {
+				width: 256px;
+			}
+
+			.post .title {
+				text-align: center;
+				font-weight: bold;
+				font-size: 16pt;
+			}
+		
+		</style>
+
 	</head>
 	<body>
-		<h1>Santa Nena's Playground</h1>
+		<div class="header"><h1>Santa Nena's Playground</h1></div>
 
-		<video width="256px" controls>
-		  <source src="videos/crobozzle.mp4" type="video/mp4">
-		  Your browser does not support HTML video.
-		</video>
+
+		<!-- CBoggleText -->
+		<div class="post">
+			<div class="video">
+				<video controls>
+				  <source src="videos/cboggletext.mp4" type="video/mp4">
+				  Your browser does not support HTML video.
+				</video>
+				<div class="title"><a href="https://github.com/rald/CBoggleText" target="_blank">CBoggleText</a></div>
+			</div>
+		</div>
+
+		<!-- CRobozzle -->
+		<div class="post">
+			<div class="video">
+				<video controls>
+				  <source src="videos/crobozzle.mp4" type="video/mp4">
+				  Your browser does not support HTML video.
+				</video>
+				<div class="title"><a href="https://github.com/rald/CRobozzle" target="_blank">CRobozzle</a></div>
+			</div>
+		</div>
+
+
 
 	</body>
 </html>
