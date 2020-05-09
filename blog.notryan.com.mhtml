@@ -1,0 +1,70 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://blog.notryan.com/
+Subject: 
+Date: Sat, 9 May 2020 12:31:09 -0000
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--5lb2VexlkhPuxd0ywRaNQxANsCAfgSsk9PJBvKmZYb----"
+
+
+------MultipartBoundary--5lb2VexlkhPuxd0ywRaNQxANsCAfgSsk9PJBvKmZYb----
+Content-Type: text/html
+Content-ID: <frame-5EA83A3229EEC021E014C0F961729387@mhtml.blink>
+Content-Transfer-Encoding: binary
+Content-Location: https://blog.notryan.com/
+
+<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><link rel="stylesheet" type="text/css" href="cid:css-25fe86a1-b187-4211-b51d-ed77a9b5073c@mhtml.blink" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head><body><h1>/blog</h1>
+<h2><a href="https://blog.notryan.com/rss.xml">Subscribe via RSS!</a></h2>
+<h3>
+Built and served with:
+<a href="https://blog.notryan.com/build.sh">build.sh</a>
+<a href="https://blog.notryan.com/rss.c">rss.c</a>
+<!--a href="header.c">header.c</a-->
+<a href="https://blog.notryan.com/server.c">server.c</a>
+<a href="https://blog.notryan.com/mobile.c">mobile.c</a>
+</h3>
+<h3>
+page view count: <a href="https://blog.notryan.com/stats.html">stats.html</a>
+</h3>
+<pre>-----
+
+<a href="https://blog.notryan.com/013.txt"><code><small>Fri, 08 May 2020</small> - </code>Minimalist HTML</a>
+
+<a href="https://blog.notryan.com/012.txt"><code><small>Fri, 08 May 2020</small> - </code>Revel in Its Difficulty</a>
+
+<a href="https://blog.notryan.com/011.txt"><code><small>Wed, 06 May 2020</small> - </code>I am a Programmer</a>
+
+<a href="https://blog.notryan.com/010.txt"><code><small>Wed, 06 May 2020</small> - </code>rss.c : Article Rendering</a>
+
+<a href="https://blog.notryan.com/009.txt"><code><small>Tue, 05 May 2020</small> - </code>100 Lines of C, in a Closet</a>
+
+<a href="https://blog.notryan.com/008.txt"><code><small>Mon, 04 May 2020</small> - </code>My Best 4 Hours</a>
+
+<a href="https://blog.notryan.com/007.txt"><code><small>Sun, 03 May 2020</small> - </code>./header.c &gt;007.txt</a>
+
+<a href="https://blog.notryan.com/006.txt"><code><small>Wed, 29 Apr 2020</small> - </code>Some Things that are Speedy</a>
+
+<a href="https://blog.notryan.com/005.txt"><code><small>Mon, 27 Apr 2020</small> - </code>Returning to LA</a>
+
+<a href="https://blog.notryan.com/004.txt"><code><small>Tue, 14 Apr 2020</small> - </code>3 Months w/o a Smartphone</a>
+
+<a href="https://blog.notryan.com/003.txt"><code><small>Sat, 04 Apr 2020</small> - </code>Reclaiming the Cell Phone</a>
+
+<a href="https://blog.notryan.com/002.txt"><code><small>Wed, 22 Jan 2020</small> - </code>Some Candle Volts</a>
+
+<a href="https://blog.notryan.com/001.txt"><code><small>Tue, 21 Jan 2020</small> - </code>Plaintext Blogs</a>
+
+</pre>
+</body></html>
+------MultipartBoundary--5lb2VexlkhPuxd0ywRaNQxANsCAfgSsk9PJBvKmZYb----
+Content-Type: text/css
+Content-Transfer-Encoding: binary
+Content-Location: cid:css-25fe86a1-b187-4211-b51d-ed77a9b5073c@mhtml.blink
+
+@charset "windows-1252";
+
+body, html { margin: 1em; font-family: monospace; }
+------MultipartBoundary--5lb2VexlkhPuxd0ywRaNQxANsCAfgSsk9PJBvKmZYb------
