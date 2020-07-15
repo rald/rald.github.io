@@ -29,11 +29,11 @@
 		<script>
 
 var playlist=[
-	"Jam Morales - Even If",
-	"Geneva Cruz - Pangarap Ka",
-	"Smokey Mountain - Kailan",
-	"Tootsie Guevara - Mahal Ka Sa Akin",
-	"Lilet - Kaibigan Lang Pala"
+	"ang pagibig kong ito",
+	"hindi ko kaya",
+	"kung kailangan mo ako",
+	"maybe",
+	"sa ugoy ng duyan"
 ];
 
 var player=document.getElementById("player");
@@ -83,7 +83,7 @@ function next() {
 
 function change() {
 	var currentSong=playlist[currentIndex];
-	player.src="music/"+currentSong+".mp3";
+	player.src="music/"+currentSong+".m4a";
 	info.innerHTML=(currentIndex+1)+". "+currentSong;
 	play();
 }
