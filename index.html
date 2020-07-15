@@ -1,128 +1,57 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title></title>
-
-		<style>
-			html,body {
-				font-family: san serif;
-				font-size: 16pt;
-			}
-		</style>
-
+		<title>Santa Nena's Playground</title>
+		<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
 	</head>
 	<body>
+		<div id="wrap">
+			<div id="top"></div>
 
-		<audio id="player"></audio>
-		<center>
-			<span id="info"></span><br/>
-			<span id="counter"></span><br/>
-			<button onclick="play()"><img src="images/play.png" width="32px" height="32px"></button>
-			<button onclick="pause()"><img src="images/pause.png" width="32px" height="32px"></button>
-			<button onclick="stop()"><img src="images/stop.png" width="32px" height="32px"></button>
-			<button onclick="prev()"><img src="images/prev.png" width="32px" height="32px"></button>
-			<button onclick="next()"><img src="images/next.png" width="32px" height="32px"></button>
-		</center>
+			<div id="content">
 
-		<div id="display"></div>
+				<div class="header">
+					<h1><a href="#">Santa Nena's Playground</a></h1>
+					<h2>Eat, Sleep, and Play All Day...</h2>
+				</div>
 
-		<script>
+				<div class="breadcrumbs">
+					<a href="#">Home</a> &middot; You are here
+				</div>
 
-var playlist=[
-	"ang pagibig kong ito",
-	"hindi ko kaya",
-	"kung kailangan mo ako",
-	"maybe",
-	"sa ugoy ng duyan"
-];
+				<div class="middle">
+					<h2>C Language Programs</h2>
+					<ul>
+						<li>CBoggleText      <a href="videos/cboggletext.mp4">mp4</a>     <a href="https://github.com/rald/CBoggleText">src</a></li>
+						<li>CBombz           <a href="videos/cbombz.mp4">mp4</a>          <a href="https://github.com/rald/CBombz">src</a></li>
+						<li>CGameOfLife      <a href="videos/cgameoflife.mp4">mp4</a>     <a href="https://github.com/rald/CGameOfLife">src</a></li>
+						<li>CMissileDefense  <a href="videos/cmissiledefense.mp4">mp4</a> <a href="https://github.com/rald/CMissileDefense">src</a></li>
+						<li>CPang            <a href="videos/cpang.mp4">mp4</a>           <a href="https://github.com/rald/CPang">src</a></li>
+						<li>CRobozzle        <a href="videos/crobozzle.mp4">mp4</a>       <a href="https://github.com/rald/CRobozzle">src</a></li>
+						<li>CSnake           <a href="videos/csnake.mp4">mp4</a>          <a href="https://github.com/rald/CSnake">src</a></li>
+						<li>CSolitaire       <a href="videos/csolitaire.mp4">mp4</a>      <a href="https://github.com/rald/CSolitaire">src</a></li>
+					</ul>
+				</div>
 
-var player=document.getElementById("player");
-var info=document.getElementById("info");
-var counter=document.getElementById("counter");
-var currentIndex=0;
+				<div class="right">
+					<h2>Navigation</h2>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+					</ul>
+				</div>
 
-function shuffle(array) {
-	for (var i = array.length - 1; i > 0; i--) {
-		var j = Math.floor(Math.random() * (i + 1));
-		var temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-	}
-}
+				<div id="clear"></div>
 
-function play() {
-	player.play();
-}
+			</div>
 
-function pause() {
-	player.pause();
-}
+			<div id="bottom"></div>
 
-function stop() {
-	player.pause();
-	player.currentTime=0;
-}
+		</div>
 
-function prev() {
-	if(currentIndex>0) {
-		currentIndex--;
-	} else {
-		currentIndex=playlist.length-1;
-	}
-	change();
-}
-
-function next() {
-	if(currentIndex<playlist.length-1) {
-		currentIndex++;
-	} else {
-		currentIndex=0;
-	}
-	change();
-}
-
-function change() {
-	var currentSong=playlist[currentIndex];
-	player.src="music/"+currentSong+".m4a";
-	info.innerHTML=(currentIndex+1)+". "+currentSong;
-	play();
-}
-
-function timer() {
-	counter.innerHTML=
-		toTime(player.currentTime)+" / "+
-		toTime(player.duration);
-}
-
-function toTime(secs) {
-	var sec_num = Math.floor(secs);
-	var minutes = Math.floor(sec_num / 60);
-	var seconds = sec_num - (minutes * 60);
-	if (seconds < 10) seconds = "0"+seconds;
-	return minutes+':'+seconds;
-}
-
-function jump(index) {
-	currentIndex=index;
-	change();
-}
-
-function list() {
-	html="<table align='center' cellspacing='10px'>";
-	for(var i=0;i<playlist.length;i++) {
-		html+="<tr><td><a href='javascript:jump("+i+");'>"+(i+1)+". "+playlist[i]+"</a></td></tr>";
-	}
-	html+="</table>";
-	display.innerHTML=html;
-}
-
-player.onended=next;
-shuffle(playlist);
-list();
-change();
-setInterval(timer,1000/60);
-
-		</script>
+		<div id="footer">
+			Designed by Santa Nena
+		</div>
 
 	</body>
+
 </html>
