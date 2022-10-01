@@ -1,10 +1,10 @@
 * {
-    padding: 0;
-    margin: 0;
+		padding: 0;
+		margin: 0;
 } 
 
 body {
-    background: #fff;
+		background: #fff;
 	font: .74em "Trebuchet MS" Verdana, Arial, sans-serif;
 	line-height: 1.5em; 
 }
@@ -19,31 +19,30 @@ a:hover {
 
 
 #wrap {
-margin: 20px auto;
-width: 724px;
-background: #fff url('images/midbg.jpg');
-background-repeat: repeat-y;
+	margin: 20px auto;
+	width: 724px;
+	background: #fff url('images/midbg.jpg');
+	background-repeat: repeat-y;
 }
 
 #top { 
-background: #fff url('images/topbg.jpg');
-height: 30px;
+	background: #fff url('images/topbg.jpg');
+	height: 30px;
 }
 
 #content {
-padding: 0 40px 0 40px;
+	padding: 0 40px 0 40px;
 }
 
 #bottom {
-
-background: #fff url('images/botbg.jpg');
-height: 30px;
+	background: #fff url('images/botbg.jpg');
+	height: 30px;
 }
 
 
 .header {
-height: 100px;
-background: #85ACF7 url('images/hidr.jpg');
+	height: 100px;
+	background: #85ACF7 url('images/hidr.jpg');
 }
 
 .header h1 { padding-left: 17px; padding-top: 22px; font-size: 22px; color: #FFF; }
@@ -51,7 +50,7 @@ background: #85ACF7 url('images/hidr.jpg');
 .header h2 { padding-left: 17px; padding-top: 0px; font-size: 17px; color: #FFF; }
 
 .breadcrumbs { 
-    background: #F6F9FB; 
+	background: #F6F9FB; 
 	border-bottom: 1px solid #E1E1E1; 
 	padding: 5px;
 }
