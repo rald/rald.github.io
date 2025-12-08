@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POCS - Class Schedule</title>
+  <style>
+    body {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<table border="1" id="scheduleTable" width="1600">
+  <!-- Table will be generated here -->
+</table>
+
+<script>
+const schedule = [
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Monday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Tuesday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Wednesday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Thursday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Friday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Saturday', startTime: '12:00', endTime: '13:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Sunday', startTime: '12:00', endTime: '13:00' },
+
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Monday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Tuesday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Wednesday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Thursday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Friday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Saturday', startTime: '19:00', endTime: '20:00' },
+  { pal: 16, sid: "", subject: 'BREAK', dayofweek: 'Sunday', startTime: '19:00', endTime: '20:00' },
+
+/*
+  { pal: 3, sid: "I2209", subject: 'CPP-0', dayofweek: 'Friday', startTime: '8:00', endTime: '9:30' },
+  { pal: 3, sid: "I2209", subject: 'JAV-0', dayofweek: 'Friday', startTime: '9:30', endTime: '11:00' },
+*/
+
+];
+
+const palette = [
+"#1a1c2c",
+"#5d275d",
+"#b13e53",
+"#ef7d57",
+"#ffcd75",
+"#a7f070",
+"#38b764",
+"#257179",
+"#29366f",
+"#3b5dc9",
+"#41a6f6",
+"#73eff7",
+"#f4f4f4",
+"#94b0c2",
+"#566c86",
+"#333c57",
+"#000080",
+];
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+function blackOrWhite(bgColor) {
+  let color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+  let r = parseInt(color.substring(0, 2), 16); // hexToR
+  let g = parseInt(color.substring(2, 4), 16); // hexToG
+  let b = parseInt(color.substring(4, 6), 16); // hexToB
+  return ((r * 0.299) + (g * 0.587) + (b * 0.114)) <= 186;
+}
+
+// Helper functions
+function timeToMinutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function minutesToTime(m) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return `${h.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`;
+}
+
+// Fixed time range from 07:00 to 23:00
+const minTime = 7 * 60;   // 420 minutes
+const maxTime = 23 * 60;  // 1380 minutes
+
+// Generate 30-minute intervals between 07:00 and 23:00
+let timeSlots = [];
+for(let t = minTime; t < maxTime; t += 30) {
+  timeSlots.push({ start: t, end: t + 30 });
+}
+
+// Prepare a lookup: for each day, for each time slot index, what subject (if any) starts here?
+const subjectMap = {};
+days.forEach(day => {
+  subjectMap[day] = {};
+  schedule.forEach(entry => {
+    if (entry.dayofweek === day) {
+      const sStart = timeToMinutes(entry.startTime);
+      const sEnd = timeToMinutes(entry.endTime);
+      // Find slot index where subject starts
+      for (let i = 0; i < timeSlots.length; i++) {
+        if (timeSlots[i].start === sStart) {
+          // Calculate how many slots this subject spans
+          const span = (sEnd - sStart) / 30;
+          subjectMap[day][i] = { pal: entry.pal, sid: entry.sid, subject: entry.subject, rowspan: span };
+        }
+      }
+    }
+  });
+});
+
+// Track which cells to skip due to rowspan
+const skipMap = {};
+days.forEach(day => {
+  skipMap[day] = Array(timeSlots.length).fill(false);
+  Object.keys(subjectMap[day]).forEach(idx => {
+    const { rowspan } = subjectMap[day][idx];
+    for (let i = 1; i < rowspan; i++) {
+      skipMap[day][parseInt(idx) + i] = true;
+    }
+  });
+});
+
+// Build the table
+const table = document.getElementById('scheduleTable');
+
+// Header row
+const headerRow = document.createElement('tr');
+const timeHeader = document.createElement('th');
+timeHeader.setAttribute('bgcolor','#000080');
+timeHeader.innerHTML = "<font color='#ffffff'>Time</font>";
+timeHeader.setAttribute('width',200);
+
+headerRow.appendChild(timeHeader);
+days.forEach(day => {
+  const th = document.createElement('th');
+  th.setAttribute('bgcolor','#000080');
+  th.innerHTML = `<font color='#ffffff'>${day}</font>`;
+  th.setAttribute('width',200)
+  headerRow.appendChild(th);
+});
+table.appendChild(headerRow);
+
+// Rows for each time slot
+for (let i = 0; i < timeSlots.length; i++) {
+  const row = document.createElement('tr');
+
+  // Time cell
+  const timeCell = document.createElement('td');
+  timeCell.innerHTML = `<center><font color='#ffffff'>${minutesToTime(timeSlots[i].start)}–${minutesToTime(timeSlots[i].end)}</font></center>`;
+  timeCell.setAttribute('bgcolor','#000080');
+  row.appendChild(timeCell);
+
+  // Day cells
+  days.forEach(day => {
+    if (skipMap[day][i]) {
+      // Covered by rowspan above, skip cell
+      return;
+    }
+    if (subjectMap[day][i]) {
+      // Subject starts here, create cell with rowspan
+      const cell = document.createElement('td');
+      cell.innerHTML = `<center><font color="${blackOrWhite(palette[subjectMap[day][i].pal])?'#FFF':'#000'}"><b>${subjectMap[day][i].sid}<br>${subjectMap[day][i].subject}</b></center>`;
+      cell.setAttribute('rowspan', subjectMap[day][i].rowspan);
+      cell.setAttribute('bgcolor', palette[subjectMap[day][i].pal]);
+      row.appendChild(cell);
+    } else {
+      // Empty cell
+      row.appendChild(document.createElement('td'));
+    }
+  });
+
+  table.appendChild(row);
+}
+</script>
+
+</body>
+</html>
