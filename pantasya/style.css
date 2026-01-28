@@ -1,0 +1,62 @@
+* { font-family: sans-serif; }
+body { background: #F0F0F0; color: navy; }
+
+header { 
+	color: white; 
+	background: navy;
+	text-align: center;
+	margin: 16px 16px 0 16px; 
+	padding: 16px; 
+	border-left: 4px solid white; 
+	border-right: 4px solid white; 
+	border-top: 4px solid white; 
+	border-bottom: none; 
+	border-radius:8px 8px 0 0;
+	box-shadow: 4px 4px 8px #505050;
+}    
+
+main { 
+	color: navy; 
+	background: white; 
+	margin: 0 16px 0 16px; 
+	padding: 8px; 
+	border-left: 4px solid white; 
+	border-right: 4px solid white; 
+	border-top: none;
+	border-bottom: none;
+	box-shadow: 4px 4px 8px #505050;
+}
+
+footer { 
+	color: white;
+	background: navy; 
+	text-align: center; 
+	font-weight: bold;
+	margin: 0px 16px 16px 16px;
+	padding: 16px; 
+	border-left: 4px solid white; 
+	border-right: 4px solid white; 
+	border-top: none;
+	border-bottom: 4px solid white;
+	border-radius: 0 0 8px 8px;
+	box-shadow: 4px 4px 8px #505050;
+}
+
+section.post { 
+	margin: 32px 8px 32px 8px;
+	padding: 8px;
+	border: 1px solid navy; 
+	border-radius: 8px; 
+	box-shadow: 2px 2px 4px #505050 inset;
+	text-align: justify;
+}
+
+section.post p.indent { text-indent: 50px;}
+
+.title {}
+.datetime { float: right;}
+.clear { clear: both;}
+.comments { float: right; }
+hr { border: 1px solid navy; }
+#container {max-width: 800px; margin: 0 auto;}
+
