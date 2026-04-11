@@ -1,0 +1,801 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/lib/python3.14/http/server.py", line 1432, in <module>
+    test(
+    ~~~~^
+        HandlerClass=handler_class,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        tls_password=tls_key_password,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/http/server.py", line 1348, in test
+    server = ServerClass(addr, HandlerClass)
+  File "/usr/lib/python3.14/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 1419, in server_bind
+    return super().server_bind()
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 148, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 99] Address not available
+127.0.0.1 - - [11/Apr/2026 08:07:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:07:48] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:07:48] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:07:48] "GET /logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:07:48] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 08:07:48] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [11/Apr/2026 08:08:23] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:08:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:08:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:09] "GET /certs.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:19] "GET /certs/cert-c-ferd.svg HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:19] "GET /certs/Certificate%20Regular.ttf HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:42] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 08:09:42] "GET /favicon.png HTTP/1.1" 200 -
+/usr/lib/python3.14/http/server.py:1422: DeprecationWarning: 'http.server.CGIHTTPRequestHandler' is deprecated and slated for removal in Python 3.15
+  self.RequestHandlerClass(request, client_address, self,
+127.0.0.1 - - [11/Apr/2026 10:26:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:13] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:13] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:14] "GET /logo.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:14] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:26:14] "GET /favicon.ico HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43246)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './favicon.ico'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:26:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:26] "GET /attendance/attendance.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:26] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:26:26] "GET /attendance/favicon.png HTTP/1.1" 404 -
+127.0.0.1 - - [11/Apr/2026 10:26:35] "GET /attendance/attendance_2023FEB.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:38] "GET /attendance/attendance_2023MAR.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:41] "GET /attendance/attendance_2023APR.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:43] "GET /attendance/attendance_2023JUL.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:47] "GET /attendance/attendance_2023AUG.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:51] "GET /attendance/attendance_2023SEP.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:55] "GET /attendance/attendance_2023OCT.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:26:59] "GET /attendance/attendance_2022SEP.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:27:25] "GET /attendance/attendance_2022OCT.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:27:31] "GET /attendance/attendance_2022NOV.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:37:23] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:23] "GET /attendance/attendance_2022NOV.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 51884)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2022NOV.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:25] "GET / HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56724)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:25] "GET /style.css HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56726)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:25] "GET /logo.png HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56742)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:25] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:25] "GET /favicon.ico HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56744)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './favicon.ico'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:29] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:29] "GET /attendance/attendance_2023FEB.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 56758)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2023FEB.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:37] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:37] "GET /attendance/attendance_2023JUL.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43402)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2023JUL.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:43] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:43] "GET /attendance/attendance_2023SEP.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43414)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2023SEP.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:45] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:45] "GET /attendance/attendance_2023OCT.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 48996)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2023OCT.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:48] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:48] "GET /attendance/attendance_2022SEP.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49000)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2022SEP.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:37:51] code 404, message File not found
+127.0.0.1 - - [11/Apr/2026 10:37:51] "GET /attendance/attendance_2022OCT.html HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49010)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/http/server.py", line 791, in send_head
+    f = open(path, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: './attendance/attendance_2022OCT.html'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 736, in do_GET
+    f = self.send_head()
+  File "/usr/lib/python3.14/http/server.py", line 1085, in send_head
+    return SimpleHTTPRequestHandler.send_head(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 793, in send_head
+    self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 551, in send_error
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:41:02] "GET /attendance/attendance.html HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35632)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:41:05] "GET / HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 37442)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:41:05] "GET /style.css HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 37452)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1057, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+127.0.0.1 - - [11/Apr/2026 10:44:12] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:44:15] "GET /schedule.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:57:38] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 10:58:52] "GET /schedule.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 10:58:53] "GET /schedule.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:00:39] "GET /attendance/attendance.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:00:41] "GET /attendance/attendance.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:01:38] "GET /attendance/attendance.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:01:58] "GET /attendance/attendance.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:02:05] "GET /attendance/attendance_2023-10.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:05:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:05:09] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:05:11] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:10:31] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:10:35] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:20:06] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:20:07] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:07] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:07] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:07] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:17] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:20:18] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:18] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:18] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:18] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:18] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:19] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:19] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:19] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:20:49] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:20:51] "GET /students.html HTTP/1.1" 304 -
+127.0.0.1 - - [11/Apr/2026 11:22:19] "GET /students.html HTTP/1.1" 200 -
+127.0.0.1 - - [11/Apr/2026 11:22:37] "GET / HTTP/1.1" 304 -
