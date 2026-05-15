@@ -18,29 +18,17 @@
 				left: 15px;
 				z-index: 100;
 				background: rgba(255, 255, 255, 0.95);
-				padding: 15px;
+				padding: 12px;
 				border-radius: 8px;
 				box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-				display: flex;
-				flex-direction: column;
-				gap: 12px;
-				min-width: 200px;
 			}
-			label { font-weight: bold; font-size: 12px; display: block; color: #333; margin-bottom: 4px; }
-			input[type="range"] { width: 100%; cursor: pointer; }
+			label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 5px; color: #333; }
 		</style>
 	</head>
 	<body>
 		<div id="ui-layer">
-			<div>
-				<label>UPLOAD NEW IMAGE:</label>
-				<input type="file" id="fileInput" accept="image/*">
-			</div>
-			<hr style="border: 0; border-top: 1px solid #ddd; margin: 4px 0;">
-			<div>
-				<label id="gridLabel">GRID SIZE: 3 x 3</label>
-				<input type="range" id="gridSlider" min="2" max="10" value="3" step="1">
-			</div>
+			<label>UPLOAD NEW IMAGE:</label>
+			<input type="file" id="fileInput" accept="image/*">
 		</div>
 
 		<script src="q5.js"></script>
@@ -60,20 +48,6 @@ function setup() {
   
   const fileInput = document.getElementById('fileInput');
   fileInput.addEventListener('change', handleFileSelection);
-
-  const gridSlider = document.getElementById('gridSlider');
-  const gridLabel = document.getElementById('gridLabel');
-  
-  // 1. UPDATE LABEL ONLY (While sliding)
-  gridSlider.addEventListener('input', (e) => {
-    gridLabel.innerText = `GRID SIZE: ${e.target.value} x ${e.target.value}`;
-  });
-
-  // 2. RESTART PUZZLE ONLY ON RELEASE (The 'change' event)
-  gridSlider.addEventListener('change', (e) => {
-    gridSize = parseInt(e.target.value);
-    if (isImageLoaded) initPuzzle();
-  });
 
   img = loadImage('abe.jpg', 
     () => { isImageLoaded = true; initPuzzle(); }, 
@@ -125,7 +99,7 @@ function initPuzzle() {
       
       tiles.push({
         img: tileImg,
-        origX: x, 
+        origX: x, // Store original position to check for win
         origY: y,
         currentX: x,
         currentY: y
@@ -136,7 +110,7 @@ function initPuzzle() {
 }
 
 function shuffleTiles() {
-  let moves = gridSize * gridSize * 20; 
+  let moves = 400; 
   for (let i = 0; i < moves; i++) {
     let neighbors = tiles.filter(t => abs(emptyPos.x - t.currentX) + abs(emptyPos.y - t.currentY) === 1);
     let tileToMove = random(neighbors);
@@ -174,19 +148,22 @@ function draw() {
   }
 
   if (solved) {
+    // Draw Particles
     for (let i = particles.length - 1; i >= 0; i--) {
       particles[i].update();
       particles[i].show();
       if (particles[i].finished()) particles.splice(i, 1);
     }
 
+    // Win Message
     textAlign(CENTER, CENTER);
-    textSize(min(width, height) * 0.08);
+    textSize(64);
     fill(255);
     stroke(0);
     strokeWeight(4);
     text("PUZZLE COMPLETE!", width/2, height/2);
     
+    // Add more particles while solved
     if (frameCount % 2 === 0) {
         for(let i=0; i<5; i++) particles.push(new Particle(random(width), height + 10));
     }
@@ -194,17 +171,7 @@ function draw() {
 }
 
 function mousePressed() {
-  // Get the UI element to find its dimensions
-  const ui = document.getElementById('ui-layer');
-  const uiRect = ui.getBoundingClientRect();
-
-  // If the mouse is inside the UI box, don't move tiles
-  if (mouseX >= uiRect.left && mouseX <= uiRect.right && 
-      mouseY >= uiRect.top && mouseY <= uiRect.bottom) {
-    return;
-  }
-
-  if (solved) return;
+  if (solved || (mouseX < 250 && mouseY < 100)) return;
 
   let offsetX = (width - tileSize * gridSize) / 2;
   let offsetY = (height - tileSize * gridSize) / 2;
@@ -235,7 +202,7 @@ class Particle {
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    this.vy += 0.2; 
+    this.vy += 0.2; // Gravity
     this.alpha -= 3;
   }
   show() {
