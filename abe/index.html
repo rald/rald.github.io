@@ -5,141 +5,217 @@
 			html, body {
 				margin: 0;
 				padding: 0;
-				overflow: hidden; /* Prevent scrolling */
+				overflow: hidden;
 				height: 100%;
 				width: 100%;
+				background: #121212;
+				font-family: system-ui, -apple-system, sans-serif;
 			}
-			canvas {
-				display: block;
+			canvas { display: block; }
+			#ui-layer {
+				position: absolute;
+				top: 15px;
+				left: 15px;
+				z-index: 100;
+				background: rgba(255, 255, 255, 0.95);
+				padding: 12px;
+				border-radius: 8px;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 			}
+			label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 5px; color: #333; }
 		</style>
 	</head>
 	<body>
+		<div id="ui-layer">
+			<label>UPLOAD NEW IMAGE:</label>
+			<input type="file" id="fileInput" accept="image/*">
+		</div>
+
 		<script src="q5.js"></script>
 
 		<script>
-
 let img;
 let tiles = [];
 let gridSize = 3;
 let tileSize;
-let emptyPos = { x: 2, y: 2 }; // Bottom-right corner is empty
-
-function preload() {
-  // Load your image here; replace with your own image path or URL
-  img = loadImage('abe.jpg'); 
-}
+let emptyPos = { x: 2, y: 2 };
+let isImageLoaded = false;
+let solved = false;
+let particles = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  
+  const fileInput = document.getElementById('fileInput');
+  fileInput.addEventListener('change', handleFileSelection);
+
+  img = loadImage('abe.jpg', 
+    () => { isImageLoaded = true; initPuzzle(); }, 
+    () => { 
+      img = createImage(600, 600);
+      img.loadPixels();
+      for (let i = 0; i < img.pixels.length; i += 4) {
+        img.pixels[i] = 100; img.pixels[i+1] = 150; img.pixels[i+2] = 250; img.pixels[i+3] = 255;
+      }
+      img.updatePixels();
+      isImageLoaded = true;
+      initPuzzle();
+    }
+  );
+}
+
+function handleFileSelection(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      loadImage(event.target.result, (newImg) => {
+        img = newImg;
+        isImageLoaded = true;
+        initPuzzle();
+      });
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+function initPuzzle() {
+  tiles = [];
+  solved = false;
+  particles = [];
+  emptyPos = { x: gridSize - 1, y: gridSize - 1 };
   tileSize = min(width, height) / gridSize;
 
-  // Slice image into tiles
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
+      if (x === gridSize - 1 && y === gridSize - 1) continue;
+
       let tileImg = img.get(
         (x * img.width) / gridSize,
         (y * img.height) / gridSize,
         img.width / gridSize,
         img.height / gridSize
       );
+      
       tiles.push({
         img: tileImg,
-        originalX: x,
-        originalY: y,
+        origX: x, // Store original position to check for win
+        origY: y,
         currentX: x,
-        currentY: y,
+        currentY: y
       });
     }
   }
-
-  // Remove the last tile to create empty space
-  tiles.pop();
-
   shuffleTiles();
 }
 
-function draw() {
-  background(220);
+function shuffleTiles() {
+  let moves = 400; 
+  for (let i = 0; i < moves; i++) {
+    let neighbors = tiles.filter(t => abs(emptyPos.x - t.currentX) + abs(emptyPos.y - t.currentY) === 1);
+    let tileToMove = random(neighbors);
+    if (tileToMove) {
+      swapWithEmpty(tileToMove);
+    }
+  }
+}
 
-  // Center puzzle on screen
+function swapWithEmpty(tile) {
+  let tempX = tile.currentX;
+  let tempY = tile.currentY;
+  tile.currentX = emptyPos.x;
+  tile.currentY = emptyPos.y;
+  emptyPos.x = tempX;
+  emptyPos.y = tempY;
+}
+
+function checkWin() {
+  for (let t of tiles) {
+    if (t.currentX !== t.origX || t.currentY !== t.origY) return false;
+  }
+  return true;
+}
+
+function draw() {
+  background(20);
+  if (!isImageLoaded) return;
+
   let offsetX = (width - tileSize * gridSize) / 2;
   let offsetY = (height - tileSize * gridSize) / 2;
 
-  // Draw tiles at their current positions
   for (let tile of tiles) {
-    image(
-      tile.img,
-      offsetX + tile.currentX * tileSize,
-      offsetY + tile.currentY * tileSize,
-      tileSize,
-      tileSize
-    );
+    image(tile.img, offsetX + tile.currentX * tileSize, offsetY + tile.currentY * tileSize, tileSize - 1, tileSize - 1);
+  }
+
+  if (solved) {
+    // Draw Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update();
+      particles[i].show();
+      if (particles[i].finished()) particles.splice(i, 1);
+    }
+
+    // Win Message
+    textAlign(CENTER, CENTER);
+    textSize(64);
+    fill(255);
+    stroke(0);
+    strokeWeight(4);
+    text("PUZZLE COMPLETE!", width/2, height/2);
+    
+    // Add more particles while solved
+    if (frameCount % 2 === 0) {
+        for(let i=0; i<5; i++) particles.push(new Particle(random(width), height + 10));
+    }
   }
 }
 
 function mousePressed() {
-  // Toggle fullscreen on first tap/click
-  if (!fullscreen()) {
-    fullscreen(true);
-  }
+  if (solved || (mouseX < 250 && mouseY < 100)) return;
 
-  // Calculate tile position relative to puzzle offset
   let offsetX = (width - tileSize * gridSize) / 2;
   let offsetY = (height - tileSize * gridSize) / 2;
-
   let x = floor((mouseX - offsetX) / tileSize);
   let y = floor((mouseY - offsetY) / tileSize);
 
-  if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) return;
+  let clickedTile = tiles.find(t => t.currentX === x && t.currentY === y);
 
-  // Find tile at clicked position
-  let clickedTile = tiles.find(
-    (t) => t.currentX === x && t.currentY === y
-  );
-
-  if (clickedTile && isAdjacentToEmpty(clickedTile.currentX, clickedTile.currentY)) {
-    // Swap tile with empty space
-    let tempX = clickedTile.currentX;
-    let tempY = clickedTile.currentY;
-    clickedTile.currentX = emptyPos.x;
-    clickedTile.currentY = emptyPos.y;
-    emptyPos.x = tempX;
-    emptyPos.y = tempY;
+  if (clickedTile && abs(emptyPos.x - x) + abs(emptyPos.y - y) === 1) {
+    swapWithEmpty(clickedTile);
+    if (checkWin()) {
+      solved = true;
+      for (let i = 0; i < 100; i++) particles.push(new Particle(width / 2, height / 2));
+    }
   }
 }
 
-function isAdjacentToEmpty(x, y) {
-  return abs(emptyPos.x - x) + abs(emptyPos.y - y) === 1;
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.vx = random(-5, 5);
+    this.vy = random(-15, -5);
+    this.alpha = 255;
+    this.color = color(random(255), random(255), random(255));
+  }
+  finished() { return this.alpha < 0; }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy += 0.2; // Gravity
+    this.alpha -= 3;
+  }
+  show() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.alpha);
+    ellipse(this.x, this.y, 8);
+  }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   tileSize = min(width, height) / gridSize;
 }
-
-// Shuffle tiles by making random valid moves
-function shuffleTiles() {
-  let moves = 1000; // Number of random moves
-  for (let i = 0; i < moves; i++) {
-    // Find all tiles adjacent to empty
-    let neighbors = tiles.filter((t) =>
-      isAdjacentToEmpty(t.currentX, t.currentY)
-    );
-    // Pick a random neighbor to move into empty space
-    let tile = random(neighbors);
-    if (tile) {
-      let tempX = tile.currentX;
-      let tempY = tile.currentY;
-      tile.currentX = emptyPos.x;
-      tile.currentY = emptyPos.y;
-      emptyPos.x = tempX;
-      emptyPos.y = tempY;
-    }
-  }
-}
-
 		</script>
-		
 	</body>
 </html>

@@ -1,0 +1,145 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">	
+		<style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden; /* Prevent scrolling */
+				height: 100%;
+				width: 100%;
+			}
+			canvas {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="q5.js"></script>
+
+		<script>
+
+let img;
+let tiles = [];
+let gridSize = 3;
+let tileSize;
+let emptyPos = { x: 2, y: 2 }; // Bottom-right corner is empty
+
+function preload() {
+  // Load your image here; replace with your own image path or URL
+  img = loadImage('abe.jpg'); 
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  tileSize = min(width, height) / gridSize;
+
+  // Slice image into tiles
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      let tileImg = img.get(
+        (x * img.width) / gridSize,
+        (y * img.height) / gridSize,
+        img.width / gridSize,
+        img.height / gridSize
+      );
+      tiles.push({
+        img: tileImg,
+        originalX: x,
+        originalY: y,
+        currentX: x,
+        currentY: y,
+      });
+    }
+  }
+
+  // Remove the last tile to create empty space
+  tiles.pop();
+
+  shuffleTiles();
+}
+
+function draw() {
+  background(220);
+
+  // Center puzzle on screen
+  let offsetX = (width - tileSize * gridSize) / 2;
+  let offsetY = (height - tileSize * gridSize) / 2;
+
+  // Draw tiles at their current positions
+  for (let tile of tiles) {
+    image(
+      tile.img,
+      offsetX + tile.currentX * tileSize,
+      offsetY + tile.currentY * tileSize,
+      tileSize,
+      tileSize
+    );
+  }
+}
+
+function mousePressed() {
+  // Toggle fullscreen on first tap/click
+  if (!fullscreen()) {
+    fullscreen(true);
+  }
+
+  // Calculate tile position relative to puzzle offset
+  let offsetX = (width - tileSize * gridSize) / 2;
+  let offsetY = (height - tileSize * gridSize) / 2;
+
+  let x = floor((mouseX - offsetX) / tileSize);
+  let y = floor((mouseY - offsetY) / tileSize);
+
+  if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) return;
+
+  // Find tile at clicked position
+  let clickedTile = tiles.find(
+    (t) => t.currentX === x && t.currentY === y
+  );
+
+  if (clickedTile && isAdjacentToEmpty(clickedTile.currentX, clickedTile.currentY)) {
+    // Swap tile with empty space
+    let tempX = clickedTile.currentX;
+    let tempY = clickedTile.currentY;
+    clickedTile.currentX = emptyPos.x;
+    clickedTile.currentY = emptyPos.y;
+    emptyPos.x = tempX;
+    emptyPos.y = tempY;
+  }
+}
+
+function isAdjacentToEmpty(x, y) {
+  return abs(emptyPos.x - x) + abs(emptyPos.y - y) === 1;
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  tileSize = min(width, height) / gridSize;
+}
+
+// Shuffle tiles by making random valid moves
+function shuffleTiles() {
+  let moves = 1000; // Number of random moves
+  for (let i = 0; i < moves; i++) {
+    // Find all tiles adjacent to empty
+    let neighbors = tiles.filter((t) =>
+      isAdjacentToEmpty(t.currentX, t.currentY)
+    );
+    // Pick a random neighbor to move into empty space
+    let tile = random(neighbors);
+    if (tile) {
+      let tempX = tile.currentX;
+      let tempY = tile.currentY;
+      tile.currentX = emptyPos.x;
+      tile.currentY = emptyPos.y;
+      emptyPos.x = tempX;
+      emptyPos.y = tempY;
+    }
+  }
+}
+
+		</script>
+		
+	</body>
+</html>
