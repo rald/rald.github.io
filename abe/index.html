@@ -12,38 +12,59 @@
 				font-family: system-ui, -apple-system, sans-serif;
 			}
 			canvas { display: block; }
+			
 			#ui-layer {
 				position: absolute;
-				top: 15px;
-				left: 15px;
+				top: 10px;
+				left: 10px;
+				right: 10px;
+				max-width: 280px;
 				z-index: 100;
 				background: rgba(255, 255, 255, 0.95);
-				padding: 15px;
+				padding: 12px;
 				border-radius: 8px;
 				box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 				display: flex;
 				flex-direction: column;
-				gap: 12px;
-				min-width: 200px;
+				gap: 10px;
 			}
-			label { font-weight: bold; font-size: 12px; display: block; color: #333; margin-bottom: 4px; }
+
+			.control-group {
+				display: flex;
+				flex-direction: column;
+			}
+
+			label { 
+				font-weight: bold; 
+				font-size: 11px; 
+				color: #333; 
+				margin-bottom: 4px;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			input[type="file"] { font-size: 12px; width: 100%; }
 			input[type="range"] { width: 100%; cursor: pointer; }
+
+			@media (max-width: 400px) {
+				#ui-layer { padding: 8px; gap: 6px; }
+				label { font-size: 10px; }
+			}
 		</style>
 	</head>
 	<body>
 		<div id="ui-layer">
-			<div>
-				<label>UPLOAD NEW IMAGE:</label>
+			<div class="control-group">
+				<label>Image Source</label>
 				<input type="file" id="fileInput" accept="image/*">
 			</div>
-			<hr style="border: 0; border-top: 1px solid #ddd; margin: 4px 0;">
-			<div>
-				<label id="gridLabel">GRID SIZE: 3 x 3</label>
+			<div class="control-group">
+				<label id="gridLabel">Grid: 3 x 3</label>
 				<input type="range" id="gridSlider" min="2" max="10" value="3" step="1">
 			</div>
 		</div>
 
-		<script src="q5.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
 		<script>
 let img;
@@ -64,20 +85,25 @@ function setup() {
   const gridSlider = document.getElementById('gridSlider');
   const gridLabel = document.getElementById('gridLabel');
   
-  // 1. UPDATE LABEL ONLY (While sliding)
+  // Update label while sliding
   gridSlider.addEventListener('input', (e) => {
-    gridLabel.innerText = `GRID SIZE: ${e.target.value} x ${e.target.value}`;
+    gridLabel.innerText = `Grid: ${e.target.value} x ${e.target.value}`;
   });
 
-  // 2. RESTART PUZZLE ONLY ON RELEASE (The 'change' event)
+  // Re-init puzzle only when slider is released
   gridSlider.addEventListener('change', (e) => {
     gridSize = parseInt(e.target.value);
     if (isImageLoaded) initPuzzle();
   });
 
+  // Load default image
   img = loadImage('abe.jpg', 
-    () => { isImageLoaded = true; initPuzzle(); }, 
     () => { 
+      isImageLoaded = true; 
+      initPuzzle(); 
+    }, 
+    () => { 
+      // Fallback if abe.jpg is missing
       img = createImage(600, 600);
       img.loadPixels();
       for (let i = 0; i < img.pixels.length; i += 4) {
@@ -110,7 +136,9 @@ function initPuzzle() {
   solved = false;
   particles = [];
   emptyPos = { x: gridSize - 1, y: gridSize - 1 };
-  tileSize = min(width, height) / gridSize;
+  
+  // Calculate tileSize based on 90% of the smallest screen dimension
+  tileSize = (min(width, height) * 0.9) / gridSize;
 
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
@@ -185,7 +213,7 @@ function draw() {
     fill(255);
     stroke(0);
     strokeWeight(4);
-    text("PUZZLE COMPLETE!", width/2, height/2);
+    text("COMPLETE!", width/2, height/2);
     
     if (frameCount % 2 === 0) {
         for(let i=0; i<5; i++) particles.push(new Particle(random(width), height + 10));
@@ -194,11 +222,10 @@ function draw() {
 }
 
 function mousePressed() {
-  // Get the UI element to find its dimensions
   const ui = document.getElementById('ui-layer');
   const uiRect = ui.getBoundingClientRect();
 
-  // If the mouse is inside the UI box, don't move tiles
+  // Don't interact with puzzle if clicking the menu
   if (mouseX >= uiRect.left && mouseX <= uiRect.right && 
       mouseY >= uiRect.top && mouseY <= uiRect.bottom) {
     return;
@@ -247,7 +274,7 @@ class Particle {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  tileSize = min(width, height) / gridSize;
+  tileSize = (min(width, height) * 0.9) / gridSize;
 }
 		</script>
 	</body>
