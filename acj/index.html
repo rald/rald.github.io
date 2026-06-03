@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abe's Calamansi Juice: 7-Day Challenge & Leaderboard</title>
+    <!-- Include Supabase Client Library via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: -webkit-fill-available; /* Fixed stretch bug for mobile Safari */
+        }
+        html {
+            height: -webkit-fill-available;
+        }
+        h1 {
+            color: #4caf50;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 2px dashed #4caf50;
+            padding-bottom: 8px;
+            flex-shrink: 0;
+        }
+        #output-display {
+            flex: 1;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 12px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            font-size: 0.9rem;
+        }
+        .input-area {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            width: 100%;
+        }
+        #command-input {
+            flex: 1;
+            background-color: #222;
+            border: 1px solid #4caf50;
+            color: #fff;
+            padding: 14px 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 4px;
+            outline: none;
+            min-width: 0; /* Prevents input from bursting layout boundaries in flex containers */
+        }
+        #command-input:focus {
+            box-shadow: 0 0 5px #4caf50;
+        }
+        button {
+            background-color: #4caf50;
+            color: #121212;
+            border: none;
+            padding: 0 16px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:active {
+            background-color: #388e3c;
+        }
+
+        /* Responsive Optimization rules targeting devices thinner than 600px */
+        @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+            h1 {
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            #output-display {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            #command-input {
+                padding: 12px 8px;
+                font-size: 0.95rem;
+            }
+            button {
+                padding: 0 12px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🍋 ABE'S CALAMANSI JUICE: 7-DAY CHALLENGE 🇵🇭</h1>
+    
+    <div id="output-display"></div>
+
+    <div class="input-area">
+        <input type="text" id="command-input" placeholder="Enter your name to start or type an action..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button onclick="handleInput()">Execute</button>
+    </div>
+
+<script>
+    // ⚠️ ACTUAL SUPABASE PROJECT CONFIGURATION DETAILS
+    const SUPABASE_URL = "https://akgtdpolxbkvlszsganz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_8oW1dL-yLPWRlH0xydDbew_7xzQLnG5";
+    
+    let supabaseClient = null;
+    if (SUPABASE_URL !== "YOUR_SUPABASE_PROJECT_URL" && SUPABASE_URL !== "") {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    const outputEl = document.getElementById('output-display');
+    const inputEl = document.getElementById('command-input');
+
+    const GAME = {
+        TARGET_GOAL: 1500.00, 
+        isGameOver: false,
+        gameStatePhase: "INTRO_NAME", 
+
+        PRICES: {
+            calamansi: 0.80, 
+            sugar: 0.075,     
+            ice: 0.30,        
+            cups: 1.20        
+        },
+
+        WEATHER_TYPES: {
+            "SUNNY (Napakainit!)": { demandMod: 1.5 },
+            "CLOUDY (Makulimlim)": { demandMod: 1.0 },
+            "RAINY (Umuulan)":     { demandMod: 0.4 }
+        },
+
+        state: {
+            playerName: "Abe",
+            day: 1,
+            cash: 500.00,
+            inventory: { calamansi: 0, sugar: 0, ice: 0, cups: 0 },
+            recipe: { calamansi: 3, sugar: 20, ice: 1 }, 
+            sellingPrice: 20.00,
+            currentWeather: "",
+            totalCupsSoldOverall: 0
+        },
+
+        fmt: (num) => "₱" + parseFloat(num).toFixed(2),
+
+        print(msg) {
+            outputEl.innerHTML += msg + "\n";
+            outputEl.scrollTop = outputEl.scrollHeight;
+        },
+
+        clearDisplay() {
+            outputEl.innerHTML = "";
+        },
+
+        async initGame() {
+            this.clearDisplay();
+            this.print(`=======================================================`);
+            this.print(`         WELCOME TO ABE'S CALAMANSI JUICE ECO-SIM!      `);
+            this.print(`=======================================================`);
+            this.print(`Can you build a localized beverage empire in just 7 days?\n`);
+            
+            this.print(`📡 Pulling latest rankings from cloud service storage...`);
+            await this.displayLeaderboard();
+            
+            this.print(`\n👉 Please enter your entrepreneur name below to start (Max 16 chars):`);
+        },
+
+        startDay() {
+            this.clearDisplay();
+            
+            if (this.state.day > 7) {
+                this.triggerEndgame();
+                return;
+            }
+
+            this.print(`=======================================================`);
+            this.print(`   👑 PROPRIETOR: ${this.state.playerName.toUpperCase()} | DAY ${this.state.day} OF 7  `);
+            this.print(`=======================================================`);
+            this.print(`🎯 GOAL       : Reach <b>${this.fmt(this.TARGET_GOAL)}</b> by the end of Day 7!`);
+            
+            const weathers = Object.keys(this.WEATHER_TYPES);
+            this.state.currentWeather = weathers[Math.floor(Math.random() * weathers.length)];
+            
+            this.print(`☁️  Forecast   : ${this.state.currentWeather}`);
+            this.print(`💰 Capital    : <b>${this.fmt(this.state.cash)}</b>`);
+            this.print(`📦 Inventory  : [🍋 Calamansi: ${this.state.inventory.calamansi}pcs] [🧂 Sugar: ${this.state.inventory.sugar}g] [🧊 Ice: ${this.state.inventory.ice}pcs] [🥤 Cups: ${this.state.inventory.cups}pcs]`);
+            this.print(`📐 Current Blend (Per Cup): ${this.state.recipe.calamansi} Calamansi | ${this.state.recipe.sugar}g Sugar | ${this.state.recipe.ice} Ice`);
+            this.print(`💵 Selling Price: ${this.fmt(this.state.sellingPrice)} per cup`);
+            this.print(`-------------------------------------------------------`);
+            this.print(`📋 AVAILABLE COMMANDS:`);
+            this.print(`  • <b>buy [item] [amount]</b>  -> e.g., buy calamansi 50`);
+            this.print(`  • <b>recipe [calamansi] [sugar] [ice]</b> -> e.g., recipe 3 20 1`);
+            this.print(`  • <b>price [amount]</b>       -> e.g., price 25`);
+            this.print(`  • <b>serve</b>              -> Run operations for the day!`);
+            this.print(`  • <b>help</b>               -> Show ingredient unit prices.`);
+            this.print(`=======================================================`);
+        },
+
+        showHelp() {
+            this.print(`\n🛒 MARKET PRICES:`);
+            this.print(`  • Calamansi : ${this.fmt(this.PRICES.calamansi)} per piece`);
+            this.print(`  • Sugar     : ${this.fmt(this.PRICES.sugar)} per gram`);
+            this.print(`  • Ice       : ${this.fmt(this.PRICES.ice)} per cup serving`);
+            this.print(`  • Cups      : ${this.fmt(this.PRICES.cups)} per piece\n`);
+        },
+
+        buy(item, amount) {
+            if (!this.PRICES.hasOwnProperty(item)) {
+                this.print(`❌ Unknown item "${item}".`);
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                this.print(`❌ Enter a valid positive amount.`);
+                return;
+            }
+
+            let totalCost = this.PRICES[item] * amount;
+            if (this.state.cash < totalCost) {
+                this.print(`❌ Short on cash! Required: ${this.fmt(totalCost)}.`);
+                return;
+            }
+
+            this.state.cash -= totalCost;
+            this.state.inventory[item] += amount;
+            this.print(`🟢 Bought ${amount} of ${item}. Balance: ${this.fmt(this.state.cash)}`);
+        },
+
+        setRecipe(calamansi, sugar, ice) {
+            if(isNaN(calamansi) || isNaN(sugar) || isNaN(ice) || calamansi < 1 || sugar < 1 || ice < 0) {
+                this.print("❌ Invalid recipe metrics.");
+                return;
+            }
+            this.state.recipe = { calamansi, sugar, ice };
+            this.print(`🟢 Recipe Configured.`);
+        },
+
+        setPrice(amount) {
+            if (isNaN(amount) || amount <= 0) return this.print("❌ Invalid price.");
+            this.state.sellingPrice = amount;
+            this.print(`🟢 Retail Price set to ${this.fmt(amount)} per cup.`);
+        },
+
+        runSimulation() {
+            const weatherObj = this.WEATHER_TYPES[this.state.currentWeather];
+            let score = 1.0;
+            let feedback = "Sarap! Napakarekado ng timpla!";
+            const r = this.state.recipe;
+
+            if (r.calamansi > 5) { score = 0.4; feedback = "Ang asim sobra!"; }
+            else if (r.calamansi < 2) { score = 0.3; feedback = "Lasang pinaghugasan, masyadong matabang."; }
+            else if (r.sugar < 10) { score = 0.5; feedback = "Mapakla."; }
+            else if (r.sugar > 35) { score = 0.4; feedback = "Uubusin ang ipon natin sa dentista sa tamis!"; }
+
+            let baseCustomers = 40;
+            let potentialCustomers = Math.round(baseCustomers * weatherObj.demandMod);
+            let marketStandardPrice = 20.00;
+            let priceRatio = marketStandardPrice / this.state.sellingPrice;
+            
+            let buyProbability = score * Math.min(priceRatio, 1.5);
+            let sold = 0;
+
+            for (let i = 0; i < potentialCustomers; i++) {
+                if (
+                    this.state.inventory.calamansi >= r.calamansi &&
+                    this.state.inventory.sugar >= r.sugar &&
+                    this.state.inventory.ice >= r.ice &&
+                    this.state.inventory.cups >= 1
+                ) {
+                    if (Math.random() < buyProbability) {
+                        this.state.inventory.calamansi -= r.calamansi;
+                        this.state.inventory.sugar -= r.sugar;
+                        this.state.inventory.ice -= r.ice;
+                        this.state.inventory.cups -= 1;
+                        sold++;
+                    }
+                } else {
+                    this.print(`⚠️ OUT OF STOCK! Ran out of ingredients mid-day.`);
+                    break;
+                }
+            }
+
+            let earned = sold * this.state.sellingPrice;
+            this.state.cash += earned;
+            this.state.totalCupsSoldOverall += sold;
+            this.state.inventory.ice = 0; 
+
+            this.clearDisplay();
+            this.print(`\n📊 END OF DAY ${this.state.day} RUN REPORT`);
+            this.print(`=======================================================`);
+            this.print(`• Feedback             : "${feedback}"`);
+            this.print(`• Cups Sold            : ${sold}`);
+            this.print(`• Earnings Generated   : +${this.fmt(earned)}`);
+            this.print(`• Remaining Net Assets : <b>${this.fmt(this.state.cash)}</b>`);
+            this.print(`=======================================================`);
+
+            if (this.state.cash < 5 && this.state.inventory.calamansi < 2) {
+                this.print(`\n💀 BANKRUPT! You don't have enough capital to purchase items. Game Over.`);
+                this.isGameOver = true;
+                return;
+            }
+
+            this.state.day++;
+            this.print(`\nPress Enter or click execute to step into tomorrow's cycle...`);
+            this.gameStatePhase = "CYCLE_DAY";
+        },
+
+        async triggerEndgame() {
+            this.isGameOver = true;
+            this.clearDisplay();
+            this.print(`=======================================================`);
+            this.print(`🎉 7-DAY BUSINESS CHALLENGE FINISHED! 🎉`);
+            this.print(`=======================================================`);
+            this.print(`Final Stand Savings: ${this.fmt(this.state.cash)}`);
+            this.print(`Total Cups Served  : ${this.state.totalCupsSoldOverall} servings`);
+            this.print(`-------------------------------------------------------`);
+            
+            if (this.state.cash >= this.TARGET_GOAL) {
+                this.print(`🏆 VICTORY! You smashed the goal milestone!`);
+            } else {
+                this.print(`📉 CHALLENGE FAILED! Hard luck on the market block.`);
+            }
+
+            if (supabaseClient) {
+                this.print(`\n📡 Syncing record data securely to Supabase Cloud...`);
+                try {
+                    const { error } = await supabaseClient
+                        .from('leaderboards')
+                        .insert([
+                            { 
+                                player_name: this.state.playerName, 
+                                final_cash: this.state.cash, 
+                                cups_sold: this.state.totalCupsSoldOverall 
+                            }
+                        ]);
+                    if (error) throw error;
+                    this.print(`✅ Record updated effectively.`);
+                } catch (err) {
+                    this.print(`❌ Error submitting data: ` + err.message);
+                }
+            } else {
+                this.print(`\nℹ️ Supabase not configured. Set URL/Key variables to open leaderboards.`);
+            }
+
+            this.print(`\n=======================================================`);
+            this.print(`🏅 GLOBAL TOP 10 PLAYERS RANKING`);
+            this.print(`=======================================================`);
+            await this.displayLeaderboard();
+            this.print(`=======================================================`);
+        },
+
+        async displayLeaderboard() {
+            if (!supabaseClient) {
+                this.print(`[Leaderboard offline - Missing configuration variables]`);
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('leaderboards')
+                    .select('player_name, final_cash, cups_sold')
+                    .order('final_cash', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    data.forEach((row, idx) => {
+                        this.print(`${idx + 1}. ${row.player_name.padEnd(16).substring(0, 16)} - Cash: ${this.fmt(row.final_cash)} (${row.cups_sold} cups)`);
+                    });
+                } else {
+                    this.print(`No scores tracked yet. Be the first on the board!`);
+                }
+            } catch (err) {
+                this.print(`❌ Error loading leaderboards: ` + err.message);
+            }
+        }
+    };
+
+    function parseCommand(inputStr) {
+        let parts = inputStr.trim().split(/\s+/);
+        let command = parts[0].toLowerCase();
+
+        if (GAME.gameStatePhase === "INTRO_NAME") {
+            let cleanedName = inputStr.trim();
+            if(cleanedName === "") return;
+            
+            if (cleanedName.length > 16) {
+                cleanedName = cleanedName.substring(0, 16);
+            }
+            
+            GAME.state.playerName = cleanedName;
+            GAME.gameStatePhase = "PLAYING";
+            inputEl.placeholder = "Type a command (e.g., 'buy calamansi 50')...";
+            GAME.startDay();
+            return;
+        }
+
+        if (GAME.gameStatePhase === "CYCLE_DAY") {
+            GAME.gameStatePhase = "PLAYING";
+            GAME.startDay();
+            return;
+        }
+
+        if (GAME.isGameOver) return;
+
+        switch (command) {
+            case 'help': GAME.showHelp(); break;
+            case 'buy': GAME.buy(parts[1], parseInt(parts[2])); break;
+            case 'recipe': GAME.setRecipe(parseInt(parts[1]), parseInt(parts[2]), parseInt(parts[3])); break;
+            case 'price': GAME.setPrice(parseFloat(parts[1])); break;
+            case 'serve': GAME.runSimulation(); break;
+            default: GAME.print(`❌ Action sequence unverified.`);
+        }
+    }
+
+    function handleInput() {
+        let value = inputEl.value;
+        if(value.trim() !== "" || GAME.gameStatePhase === "CYCLE_DAY") {
+            if (GAME.gameStatePhase === "PLAYING") GAME.print(`\n> ${value}`);
+            parseCommand(value);
+        }
+        inputEl.value = "";
+        
+        // Retain visual focus on mobile to stop keyboard layout bounce loops
+        if (window.innerWidth > 600) {
+            inputEl.focus();
+        }
+    }
+
+    inputEl.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') handleInput();
+    });
+
+    GAME.initGame();
+</script>
+</body>
+</html>
