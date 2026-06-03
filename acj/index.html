@@ -216,6 +216,7 @@
             this.print(`  • <b>buy [item] [amount]</b>  -> e.g., buy calamansi 50`);
             this.print(`  • <b>recipe [calamansi] [sugar] [ice]</b> -> e.g., recipe 3 20 1`);
             this.print(`  • <b>price [amount]</b>       -> e.g., price 25`);
+            this.print(`  • <b>inventory</b>          -> View current cash and stock.`);
             this.print(`  • <b>serve</b>              -> Run operations for the day!`);
             this.print(`  • <b>help</b>               -> Show ingredient unit prices.`);
             this.print(`=======================================================`);
@@ -227,6 +228,17 @@
             this.print(`  • Sugar     : ${this.fmt(this.PRICES.sugar)} per gram`);
             this.print(`  • Ice       : ${this.fmt(this.PRICES.ice)} per cup serving`);
             this.print(`  • Cups      : ${this.fmt(this.PRICES.cups)} per piece\n`);
+        },
+
+        showInventory() {
+            this.print(`\n📦 CURRENT STOCK REPORT:`);
+            this.print(`-------------------------------------------------------`);
+            this.print(`  💰 Available Capital : ${this.fmt(this.state.cash)}`);
+            this.print(`  🍋 Calamansi Pieces : ${this.state.inventory.calamansi} pcs`);
+            this.print(`  🧂 Refined Sugar     : ${this.state.inventory.sugar} g`);
+            this.print(`  🧊 Crushed Ice Packs : ${this.state.inventory.ice} pcs`);
+            this.print(`  🥤 Disposable Cups  : ${this.state.inventory.cups} pcs`);
+            this.print(`-------------------------------------------------------`);
         },
 
         buy(item, amount) {
@@ -430,6 +442,8 @@
 
         switch (command) {
             case 'help': GAME.showHelp(); break;
+            case 'inventory':
+            case 'inv': GAME.showInventory(); break;
             case 'buy': GAME.buy(parts[1], parseInt(parts[2])); break;
             case 'recipe': GAME.setRecipe(parseInt(parts[1]), parseInt(parts[2]), parseInt(parts[3])); break;
             case 'price': GAME.setPrice(parseFloat(parts[1])); break;
@@ -446,7 +460,6 @@
         }
         inputEl.value = "";
         
-        // Retain visual focus on mobile to stop keyboard layout bounce loops
         if (window.innerWidth > 600) {
             inputEl.focus();
         }
