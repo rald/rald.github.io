@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ABE2</title>
+
+		<!-- js-dos style sheet -->
+		<link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css">
+
+		<!-- js-dos -->
+		<script src="https://v8.js-dos.com/latest/js-dos.js"></script>
+
+		<style>
+				/* Hides the floating controls/gear icon layout entirely */
+				.jsdos-controls, 
+				.jsdos-overlay,
+				.jsdos-menu,
+				div[class*="controls-wrapper"] {
+				    display: none !important;
+				    pointer-events: none !important;
+				}
+		</style>
+    
+</head>
+<body>
+		<div id="dos" style="width: 100vw; height: 100vh;"></div>
+
+		<script>
+				Dos(document.getElementById("dos"), {
+		        url: "bundle.jsdos",
+				    kiosk: true,
+				}).then((runtime) => {
+				    // Dynamically find and destroy/hide any leftover control elements
+				    const appEl = document.getElementById("app");
+				    const controls = appEl.querySelectorAll('[class*="control"], [class*="menu"], [class*="overlay"]');
+				    controls.forEach(el => {
+				        el.style.display = 'none';
+				    });
+				});		    
+		</script>
+
+</body>
+</html>
