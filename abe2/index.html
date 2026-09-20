@@ -81,13 +81,137 @@ function movePlayer(dx,dy) {
 	if(level[ppy][ppx]=='@' && level[cpy][cpx]==' ') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='@';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		player.x=cpx;
+		player.y=cpy;
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='.') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='+';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
 		player.x=cpx;
 		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='$' && level[npy][npx]==' ') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='@';
+		level[npy][npx]='$';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,3);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='$' && level[npy][npx]=='.') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='@';
+		level[npy][npx]='*';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,4);
+		player.x=cpx;
+		player.y=cpy;		
+		player.goals--;
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
+	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='*' && level[npy][npx]==' ') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='+';
+		level[npy][npx]='$';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,3);
+		player.x=cpx;
+		player.y=cpy;		
+		player.goals++;
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
+	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='*' && level[npy][npx]=='.') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='+';
+		level[npy][npx]='*';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,0);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,4);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]==' ') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='@';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='.') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='+';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='$' && level[npy][npx]==' ') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='@';
+		level[npy][npx]='$';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,3);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='$' && level[npy][npx]=='.') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='@';
+		level[npy][npx]='*';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,1);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,4);
+		player.x=cpx;
+		player.y=cpy;		
+		player.goals--;
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='*' && level[npy][npx]==' ') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='+';
+		level[npy][npx]='$';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,3);
+		player.x=cpx;
+		player.y=cpy;		
+		player.goals++;
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
+	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='*' && level[npy][npx]=='.') {
+		level[ppy][ppx]='.';
+		level[cpy][cpx]='+';
+		level[npy][npx]='*';
+		drawCanvas(ctx,sprites,ppx*16,ppy*16,1,5);
+		drawCanvas(ctx,sprites,cpx*16,cpy*16,1,2);
+		drawCanvas(ctx,sprites,npx*16,npy*16,1,4);
+		player.x=cpx;
+		player.y=cpy;		
+		player.moves++;
+		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	}
 
-	clrscr(ctx);
-	drawLevel(ctx,level,sprites,0,0,1);
-	drawPad(ctx,pad);
 }
 
 var pointer={
@@ -282,12 +406,14 @@ canvas.style.border = "1px solid white";
 var player={
 	x:0,
 	y:0,
-	numBoxes:0,
-	numGoals:0,
+	moves:0,
+	goals:0,
 };
 
 var currentLevel=0;
 var level=[];
+var numBoxes=0;
+var numGoals=0;
 for(var j=0;j<levels[currentLevel].length;j++) {
 	level.push([])
 	for(var i=0;i<levels[currentLevel][j].length;i++) {
@@ -295,16 +421,20 @@ for(var j=0;j<levels[currentLevel].length;j++) {
 		level[j].push(c);
 		switch(c) {
 			case '@': player.x=i; player.y=j; break;
-			case '+': player.x=i; player.y=j; player.numGoals++; break;
-			case '$': player.numBoxes++; break;
-			case '.': player.numGoals++; break;
+			case '+': player.x=i; player.y=j; numGoals++; break;
+			case '$': numBoxes++; break;
+			case '.': numGoals++; break;
 		}
 	}
 }
+player.goals=Math.min(numBoxes,numGoals);
 
 clrscr(ctx);
 drawLevel(ctx,level,sprites,0,0,1);
 drawPad(ctx,pad);
+drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
+drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
+drawText(ctx,font,"LEVEL: "+String(currentLevel).padStart(4),10*13+2,16*14+2,2);
 
 const handler = new PointerHandler(canvas);
 
