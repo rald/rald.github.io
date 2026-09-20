@@ -66,6 +66,144 @@ var palette = [
   "#333c57",
 ];
 
+function inrect(x,y,rx,ry,rw,rh) {
+	return x>=rx && x<rx+rw && y>=ry && y<ry+rh;
+}
+
+function movePlayer(dx,dy) {
+	ppx=player.x;
+	ppy=player.y;
+	cpx=player.x+dx;
+	cpy=player.y+dy;
+	npx=cpx+dx;
+	npy=cpy+dy;
+
+	if(level[ppy][ppx]=='@' && level[cpy][cpx]==' ') {
+		level[ppy][ppx]=' ';
+		level[cpy][cpx]='@';
+		player.x=cpx;
+		player.y=cpy;		
+	}
+
+	clrscr(ctx);
+	drawLevel(ctx,level,sprites,0,0,1);
+	drawPad(ctx,pad);
+}
+
+var pointer={
+	x:0,
+	y:0,
+	isDown:false
+};
+
+class PointerHandler {
+	constructor(element) {
+		this.element = element;
+		this.isDragging = false;
+
+		// Bind methods to preserve 'this' context
+		this.onPointerDown = this.onPointerDown.bind(this);
+		this.onPointerMove = this.onPointerMove.bind(this);
+		this.onPointerUp = this.onPointerUp.bind(this);
+
+		// Attach listeners
+		this.element.addEventListener('pointerdown', this.onPointerDown);
+		window.addEventListener('pointermove', this.onPointerMove);
+		window.addEventListener('pointerup', this.onPointerUp);
+		window.addEventListener('pointercancel', this.onPointerUp);
+
+		// Prevent default touch behaviors like scrolling/zooming on the element
+		this.element.style.touchAction = 'none';
+	}
+
+	onPointerDown(event) {
+		this.isDragging = true;
+
+		// Capture pointer so we keep receiving events even if the cursor leaves the element
+		this.element.setPointerCapture(event.pointerId);
+
+		const coords = this.getCoordinates(event);
+		console.log('Pointer Down:', coords);
+
+		// TODO: Add your start/down logic here (e.g., store starting position)
+
+		pointer.x=coords.x;
+		pointer.y=coords.y;
+		pointer.isDown=true;
+
+		if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
+			console.log('UP');
+			movePlayer( 0,-1);
+		}        
+
+		if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
+			console.log('RIGHT');
+			movePlayer( 1, 0);
+		}        
+
+		if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
+			console.log('DOWN');
+			movePlayer( 0, 1);
+		}        
+
+		if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
+			console.log('LEFT');
+			movePlayer(-1, 0);
+		}        
+
+	}
+
+	onPointerMove(event) {
+		if (!this.isDragging) return;
+
+		const coords = this.getCoordinates(event);
+		console.log('Pointer Move:', coords);
+
+		// TODO: Add your move/drag logic here (e.g., update element position)
+		pointer.x=coords.x;
+		pointer.y=coords.y;
+	}
+
+	onPointerUp(event) {
+		if (!this.isDragging) return;
+
+		this.isDragging = false;
+
+		try {
+			this.element.releasePointerCapture(event.pointerId);
+		} catch (e) {
+		// Ignore if pointer capture was already lost
+		}
+
+		const coords = this.getCoordinates(event);
+		console.log('Pointer Up:',coords);
+
+		// TODO: Add your end/release logic here
+		pointer.x=coords.x;
+		pointer.y=coords.y;
+		pointer.isDown=false;
+	}
+
+	getCoordinates(event) {
+		// Returns coordinates relative to the target element
+		const rect = this.element.getBoundingClientRect();
+		return {
+			x: event.clientX - rect.left,
+			y: event.clientY - rect.top,
+			clientX: event.clientX,
+			clientY: event.clientY
+		};
+	}
+
+	// Clean up event listeners if needed
+	destroy() {
+		this.element.removeEventListener('pointerdown', this.onPointerDown);
+		window.removeEventListener('pointermove', this.onPointerMove);
+		window.removeEventListener('pointerup', this.onPointerUp);
+		window.removeEventListener('pointercancel', this.onPointerUp);
+	}
+}
+
 function drawCanvas(ctx,cvs,x,y,s,f) {
 	var hex="0123456789ABCDEF";
 	for(var j=0;j<cvs.h;j++) {
@@ -88,6 +226,12 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 			drawCanvas(ctx,spr,i*16*s,j*16*s,s,k);
 		}
 	}
+
+	ctx.beginPath();
+	ctx.strokeStyle="#FFFFFF";
+	ctx.rect(0.5,0.5,256,256);
+	ctx.stroke();
+	ctx.closePath();	
 }
 
 function drawText(ctx,fnt,txt,x,y,s) {
@@ -106,6 +250,23 @@ function drawText(ctx,fnt,txt,x,y,s) {
 	}
 }
 
+function drawPad(ctx,pad) {
+	drawCanvas(ctx,pad, 32,256,2,0);
+	drawCanvas(ctx,pad, 64,288,2,1);
+	drawCanvas(ctx,pad, 32,320,2,2);
+	drawCanvas(ctx,pad,  0,288,2,3);
+
+	drawCanvas(ctx,pad,160,288,2,4);
+	drawCanvas(ctx,pad,224,288,2,5);
+	drawCanvas(ctx,pad,192,256,2,6);
+	drawCanvas(ctx,pad,192,320,2,7);
+}
+
+function clrscr(ctx) {
+	ctx.fillStyle=palette[0];
+	ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
 // Disables right-click context menu on the entire website
 window.addEventListener('contextmenu', (event) => {
   event.preventDefault();
@@ -118,28 +279,66 @@ canvas.width = 256;
 canvas.height = 384;
 canvas.style.border = "1px solid white";
 
-ctx.fillStyle=palette[0];
-ctx.fillRect(0,0,canvas.width,canvas.height);
+var player={
+	x:0,
+	y:0,
+	numBoxes:0,
+	numGoals:0,
+};
 
-ctx.beginPath();
-ctx.strokeStyle="#FFFFFF";
-ctx.rect(0.5,0.5,256,256);
-ctx.stroke();
-ctx.closePath();
+var currentLevel=0;
+var level=[];
+for(var j=0;j<levels[currentLevel].length;j++) {
+	level.push([])
+	for(var i=0;i<levels[currentLevel][j].length;i++) {
+		var c=levels[currentLevel][j][i];
+		level[j].push(c);
+		switch(c) {
+			case '@': player.x=i; player.y=j; break;
+			case '+': player.x=i; player.y=j; player.numGoals++; break;
+			case '$': player.numBoxes++; break;
+			case '.': player.numGoals++; break;
+		}
+	}
+}
 
-drawLevel(ctx,levels[0],sprites,0,0,1);
+clrscr(ctx);
+drawLevel(ctx,level,sprites,0,0,1);
+drawPad(ctx,pad);
 
-drawCanvas(ctx,pad, 16*2,256,2,0);
-drawCanvas(ctx,pad, 16*2*2,256+16*2,2,1);
-drawCanvas(ctx,pad, 16*2,256+16*2*2,2,2);
-drawCanvas(ctx,pad, 0,256+16*2,2,3);
+const handler = new PointerHandler(canvas);
 
-drawCanvas(ctx,pad, 16*5*2,256+16*2,2,4);
-drawCanvas(ctx,pad, 16*7*2,256+16*2,2,5);
-drawCanvas(ctx,pad, 16*6*2,256,2,6);
-drawCanvas(ctx,pad, 16*6*2,256+16*2*2,2,7);
+window.addEventListener('keydown', (event) => {
+    // Check if the pressed key is one of the arrow keys
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        // Prevent default browser scrolling
+        event.preventDefault();
+        
+        // Handle the movement
+        handleDirection(event.key);
+    }
+});
 
-drawText(ctx,font,"HELLO WORLD [14344]",4,16*14+4,2);
+function handleDirection(key) {
+    switch (key) {
+        case 'ArrowUp':
+            // Move up
+            movePlayer( 0,-1);
+            break;
+        case 'ArrowDown':
+            // Move down
+            movePlayer( 0, 1);
+            break;
+        case 'ArrowLeft':
+            // Move left
+            movePlayer(-1, 0);
+            break;
+        case 'ArrowRight':
+            // Move right
+            movePlayer( 1, 0);
+            break;
+    }
+}
 
 		</script>
 	</body>
