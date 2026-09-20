@@ -3,10 +3,25 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title></title>
+
+		<style>
+
+			.container {
+			  display: flex;
+			  justify-content: center;
+			  align-items: center;
+			  height: 100vh; /* Full viewport height */
+			}
+		
+		</style>
+
 	</head>
 	<body>
 
-		<canvas id="canvas"></canvas>
+		<div class="container">
+			<canvas id="canvas"></canvas>
+		</div>
+		
 		<script src="sprites.js"></script>
 		<script src="levels.js"></script>
 		<script src="arrows.js"></script>
@@ -31,7 +46,7 @@ var palette = [
   "#333c57",
 ];
 
-function drawCanvas(ctx,cvs,x,y,f) {
+function drawCanvas(ctx,cvs,x,y,s,f) {
 	var hex="0123456789ABCDEF";
 	for(var j=0;j<cvs.h;j++) {
 		for(var i=0;i<cvs.w;i++) {
@@ -39,18 +54,18 @@ function drawCanvas(ctx,cvs,x,y,f) {
 			var c=hex.indexOf(k);
 			if(c!=-1) {
 				ctx.fillStyle=palette[c];
-				ctx.fillRect(x+i*2,y+j*2,2,2);
+				ctx.fillRect(x+i*s,y+j*s,s,s);
 			}
 		}
 	}
 }
 
-function drawLevel(ctx,lvl,spr,x,y,l) {
+function drawLevel(ctx,lvl,spr,x,y,s) {
 	var symbols=" @+$*.#";
 	for(var j=0;j<14;j++) {
 		for(var i=0;i<16;i++) {
-			var k=symbols.indexOf(lvl[l][j][i]);
-			drawCanvas(ctx,spr,i*16*2,j*16*2,k);
+			var k=symbols.indexOf(lvl[j][i]);
+			drawCanvas(ctx,spr,i*16,j*16,s,k);
 		}
 	}
 }
@@ -58,18 +73,19 @@ function drawLevel(ctx,lvl,spr,x,y,l) {
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
 
-canvas.width = 512;
+canvas.width = 256;
 canvas.height = 512;
 
 ctx.fillStyle=palette[0];
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-drawLevel(ctx,levels,sprites,0,0,0);
+drawLevel(ctx,levels[0],sprites,0,0,1);
 
-drawCanvas(ctx,arrows,14*16*2,14*16*2,0);
-drawCanvas(ctx,arrows,15*16*2,15*16*2,1);
-drawCanvas(ctx,arrows,14*16*2,15*16*2,2);
-drawCanvas(ctx,arrows,13*16*2,15*16*2,3);
+
+drawCanvas(ctx,arrows, 96,384,4,0);
+drawCanvas(ctx,arrows,160,448,4,1);
+drawCanvas(ctx,arrows, 96,448,4,2);
+drawCanvas(ctx,arrows, 32,448,4,3);
 
 		</script>
 	</body>
