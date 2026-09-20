@@ -44,6 +44,7 @@
 		<script src="sprites.js"></script>
 		<script src="levels.js"></script>
 		<script src="arrows.js"></script>
+		<script src="font.js"></script>
 		<script>
 
 var palette = [
@@ -89,6 +90,22 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 	}
 }
 
+function drawText(ctx,fnt,txt,x,y,s) {
+	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[]";
+	var a=x,b=y;
+	for(var k=0;k<txt.length;k++) {
+		var l=chars.indexOf(txt[k]);
+		if(l!=-1) {
+			drawCanvas(ctx,fnt,a,b,s,l);
+			a+=(fnt.w+1)*s;
+			if(a+(fnt.w+1)*s>=canvas.width) {
+				a=0;
+				b+=(fnt.h+1)*s;
+			}
+		}		
+	}
+}
+
 // Disables right-click context menu on the entire website
 window.addEventListener('contextmenu', (event) => {
   event.preventDefault();
@@ -112,10 +129,12 @@ ctx.closePath();
 
 drawLevel(ctx,levels[0],sprites,0,0,1);
 
-drawCanvas(ctx,arrows, 96,256,4,0);
-drawCanvas(ctx,arrows,160,320,4,1);
-drawCanvas(ctx,arrows, 96,320,4,2);
-drawCanvas(ctx,arrows, 32,320,4,3);
+drawCanvas(ctx,arrows, 16*2,256,2,0);
+drawCanvas(ctx,arrows, 16*2*2,256+16*2,2,1);
+drawCanvas(ctx,arrows, 16*2,256+16*2*2,2,2);
+drawCanvas(ctx,arrows, 0,256+16*2,2,3);
+
+drawText(ctx,font,"HELLO WORLD [14344]",4,16*14+4,2);
 
 		</script>
 	</body>
