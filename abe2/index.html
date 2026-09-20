@@ -1,10 +1,29 @@
 <!doctype html>
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<title></title>
 
 		<style>
+      body {
+				overscroll-behavior: contain;
+      }
+
+			html, body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				background: black;
+			}
+
+			canvas {
+			  /* For modern browsers */
+			  image-rendering: pixelated; 
+			  /* For Firefox */
+			  image-rendering: crisp-edges; 
+			}
 
 			.container {
 			  display: flex;
@@ -65,27 +84,38 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 	for(var j=0;j<14;j++) {
 		for(var i=0;i<16;i++) {
 			var k=symbols.indexOf(lvl[j][i]);
-			drawCanvas(ctx,spr,i*16,j*16,s,k);
+			drawCanvas(ctx,spr,i*16*s,j*16*s,s,k);
 		}
 	}
 }
+
+// Disables right-click context menu on the entire website
+window.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+});
 
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
 
 canvas.width = 256;
-canvas.height = 512;
+canvas.height = 384;
+canvas.style.border = "1px solid white";
 
 ctx.fillStyle=palette[0];
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
+ctx.beginPath();
+ctx.strokeStyle="#FFFFFF";
+ctx.rect(0.5,0.5,256,256);
+ctx.stroke();
+ctx.closePath();
+
 drawLevel(ctx,levels[0],sprites,0,0,1);
 
-
-drawCanvas(ctx,arrows, 96,384,4,0);
-drawCanvas(ctx,arrows,160,448,4,1);
-drawCanvas(ctx,arrows, 96,448,4,2);
-drawCanvas(ctx,arrows, 32,448,4,3);
+drawCanvas(ctx,arrows, 96,256,4,0);
+drawCanvas(ctx,arrows,160,320,4,1);
+drawCanvas(ctx,arrows, 96,320,4,2);
+drawCanvas(ctx,arrows, 32,320,4,3);
 
 		</script>
 	</body>
