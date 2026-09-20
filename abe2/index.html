@@ -70,7 +70,13 @@ function inrect(x,y,rx,ry,rw,rh) {
 	return x>=rx && x<rx+rw && y>=ry && y<ry+rh;
 }
 
+function timer() {
+	elapsedTime++;
+	drawText(ctx,font,"TIME: "+String(elapsedTime).padStart(4),10*13+2,16*15+2,2);
+}
+
 function movePlayer(dx,dy) {
+
 	ppx=player.x;
 	ppy=player.y;
 	cpx=player.x+dx;
@@ -86,7 +92,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='.') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='+';
@@ -95,7 +100,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='$' && level[npy][npx]==' ') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='@';
@@ -106,7 +110,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='$' && level[npy][npx]=='.') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='@';
@@ -118,8 +121,6 @@ function movePlayer(dx,dy) {
 		player.y=cpy;		
 		player.goals--;
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
-		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
 	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='*' && level[npy][npx]==' ') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='+';
@@ -131,8 +132,6 @@ function movePlayer(dx,dy) {
 		player.y=cpy;		
 		player.goals++;
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
-		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
 	} else if(level[ppy][ppx]=='@' && level[cpy][cpx]=='*' && level[npy][npx]=='.') {
 		level[ppy][ppx]=' ';
 		level[cpy][cpx]='+';
@@ -143,7 +142,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]==' ') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='@';
@@ -152,7 +150,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='.') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='+';
@@ -161,7 +158,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='$' && level[npy][npx]==' ') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='@';
@@ -172,7 +168,6 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='$' && level[npy][npx]=='.') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='@';
@@ -184,8 +179,6 @@ function movePlayer(dx,dy) {
 		player.y=cpy;		
 		player.goals--;
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
-		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='*' && level[npy][npx]==' ') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='+';
@@ -197,8 +190,6 @@ function movePlayer(dx,dy) {
 		player.y=cpy;		
 		player.goals++;
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
-		drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
 	} else if(level[ppy][ppx]=='+' && level[cpy][cpx]=='*' && level[npy][npx]=='.') {
 		level[ppy][ppx]='.';
 		level[cpy][cpx]='+';
@@ -209,9 +200,14 @@ function movePlayer(dx,dy) {
 		player.x=cpx;
 		player.y=cpy;		
 		player.moves++;
-		drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
 	}
 
+	drawText(ctx,font,"MOVES:"+String(player.moves).padStart(4),2,16*14+2,2);
+	drawText(ctx,font,"GOALS:"+String(player.goals).padStart(4),2,16*15+2,2);
+
+	if(player.moves==1) {
+		timerInterval=setInterval(timer,1000);
+	}
 }
 
 var pointer={
@@ -359,7 +355,7 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 }
 
 function drawText(ctx,fnt,txt,x,y,s) {
-	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[]";
+	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:";
 	var a=x,b=y;
 	for(var k=0;k<txt.length;k++) {
 		var l=chars.indexOf(txt[k]);
@@ -403,6 +399,9 @@ canvas.width = 256;
 canvas.height = 384;
 canvas.style.border = "1px solid white";
 
+var timerInterval;
+var elapsedTime=0;
+
 var player={
 	x:0,
 	y:0,
@@ -432,9 +431,10 @@ player.goals=Math.min(numBoxes,numGoals);
 clrscr(ctx);
 drawLevel(ctx,level,sprites,0,0,1);
 drawPad(ctx,pad);
-drawText(ctx,font,"MOVES: "+String(player.moves).padStart(4),2,16*14+2,2);
-drawText(ctx,font,"GOALS: "+String(player.goals).padStart(4),2,16*15+2,2);
-drawText(ctx,font,"LEVEL: "+String(currentLevel).padStart(4),10*13+2,16*14+2,2);
+drawText(ctx,font,"MOVES:"+String(player.moves).padStart(4),2,16*14+2,2);
+drawText(ctx,font,"GOALS:"+String(player.goals).padStart(4),2,16*15+2,2);
+drawText(ctx,font,"LEVEL:"+String(currentLevel).padStart(4),10*13+2,16*14+2,2);
+drawText(ctx,font,"TIME: "+String(elapsedTime).padStart(4),10*13+2,16*15+2,2);
 
 const handler = new PointerHandler(canvas);
 
