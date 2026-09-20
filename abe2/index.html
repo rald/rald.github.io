@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+	</head>
+	<body>
+
+		<canvas id="canvas"></canvas>
+		<script src="sprites.js"></script>
+		<script src="levels.js"></script>
+		<script src="arrows.js"></script>
+		<script>
+
+var palette = [
+  "#1a1c2c",
+  "#5d275d",
+  "#b13e53",
+  "#ef7d57",
+  "#ffcd75",
+  "#a7f070",
+  "#38b764",
+  "#257179",
+  "#29366f",
+  "#3b5dc9",
+  "#41a6f6",
+  "#73eff7",
+  "#f4f4f4",
+  "#94b0c2",
+  "#566c86",
+  "#333c57",
+];
+
+function drawCanvas(ctx,cvs,x,y,f) {
+	var hex="0123456789ABCDEF";
+	for(var j=0;j<cvs.h;j++) {
+		for(var i=0;i<cvs.w;i++) {
+			var k=cvs.p[f][j][i];
+			var c=hex.indexOf(k);
+			if(c!=-1) {
+				ctx.fillStyle=palette[c];
+				ctx.fillRect(x+i*2,y+j*2,2,2);
+			}
+		}
+	}
+}
+
+function drawLevel(ctx,lvl,spr,x,y,l) {
+	var symbols=" @+$*.#";
+	for(var j=0;j<14;j++) {
+		for(var i=0;i<16;i++) {
+			var k=symbols.indexOf(lvl[l][j][i]);
+			drawCanvas(ctx,spr,i*16*2,j*16*2,k);
+		}
+	}
+}
+
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+
+canvas.width = 512;
+canvas.height = 512;
+
+ctx.fillStyle=palette[0];
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+drawLevel(ctx,levels,sprites,0,0,0);
+
+drawCanvas(ctx,arrows,14*16*2,14*16*2,0);
+drawCanvas(ctx,arrows,15*16*2,15*16*2,1);
+drawCanvas(ctx,arrows,14*16*2,15*16*2,2);
+drawCanvas(ctx,arrows,13*16*2,15*16*2,3);
+
+		</script>
+	</body>
+</html>
