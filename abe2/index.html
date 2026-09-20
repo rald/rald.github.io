@@ -43,7 +43,7 @@
 		
 		<script src="sprites.js"></script>
 		<script src="levels.js"></script>
-		<script src="arrows.js"></script>
+		<script src="pad.js"></script>
 		<script src="font.js"></script>
 		<script>
 
@@ -129,10 +129,15 @@ ctx.closePath();
 
 drawLevel(ctx,levels[0],sprites,0,0,1);
 
-drawCanvas(ctx,arrows, 16*2,256,2,0);
-drawCanvas(ctx,arrows, 16*2*2,256+16*2,2,1);
-drawCanvas(ctx,arrows, 16*2,256+16*2*2,2,2);
-drawCanvas(ctx,arrows, 0,256+16*2,2,3);
+drawCanvas(ctx,pad, 16*2,256,2,0);
+drawCanvas(ctx,pad, 16*2*2,256+16*2,2,1);
+drawCanvas(ctx,pad, 16*2,256+16*2*2,2,2);
+drawCanvas(ctx,pad, 0,256+16*2,2,3);
+
+drawCanvas(ctx,pad, 16*5*2,256+16*2,2,4);
+drawCanvas(ctx,pad, 16*7*2,256+16*2,2,5);
+drawCanvas(ctx,pad, 16*6*2,256,2,6);
+drawCanvas(ctx,pad, 16*6*2,256+16*2*2,2,7);
 
 drawText(ctx,font,"HELLO WORLD [14344]",4,16*14+4,2);
 
