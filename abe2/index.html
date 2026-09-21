@@ -292,6 +292,7 @@ class PointerHandler {
 				}        
 
 				break;
+
 			case GameState.START: 
 
 				if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
@@ -539,7 +540,7 @@ window.addEventListener('keydown', (event) => {
 //		console.log(event.key);
     
     if ([	'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-					'a','s','x','z','Enter'].includes(event.key)) {
+					'X','x','Z','z','Enter'].includes(event.key)) {
         event.preventDefault();
         handleDirection(event.key);
     }
@@ -562,6 +563,7 @@ function handleDirection(key) {
 					drawLevel(ctx,levels[currentLevel],sprites,0,0,1);
 					drawText(ctx,font,"LEVEL:"+String(currentLevel+1).padStart(4),10*13+2,16*14+2,2);
 					break;
+				case 'Z':
 				case 'z':
 					init0();
 					gameState=GameState.START;					
@@ -589,9 +591,11 @@ function handleDirection(key) {
 					// Move right
 					movePlayer( 1, 0);
 					break;
+        case 'X':
         case 'x':
         	init0();
 					break;
+				case 'Z':
 				case 'z':
 					init1();
 					gameState=GameState.SELECT;
@@ -600,10 +604,12 @@ function handleDirection(key) {
   	  break;
  		case GameState.COMPLETE:
 	    switch (key) {
+        case 'X':
         case 'x':
         	init0();
 					gameState=GameState.START;
 					break;
+				case 'Z':
 				case 'z':
 					init1();
 					gameState=GameState.SELECT;
