@@ -262,7 +262,6 @@ class PointerHandler {
 		this.element.setPointerCapture(event.pointerId);
 
 		const coords = this.getCoordinates(event);
-		console.log('Pointer Down:', coords);
 
 		// TODO: Add your start/down logic here (e.g., store starting position)
 
@@ -275,21 +274,18 @@ class PointerHandler {
 			case GameState.SELECT: 
 
 				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
-					console.log('LEFT');
 					if(currentLevel>0) currentLevel--;
 					drawLevel(ctx,levels[currentLevel],sprites,0,0,1);
 					drawText(ctx,font,"LEVEL:"+String(currentLevel+1).padStart(4),10*13+2,16*14+2,2);
 				}        
 
 				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
-					console.log('RIGHT');
 					if(currentLevel<levels.length-1) currentLevel++;
 					drawLevel(ctx,levels[currentLevel],sprites,0,0,1);
 					drawText(ctx,font,"LEVEL:"+String(currentLevel+1).padStart(4),10*13+2,16*14+2,2);
 				}        
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
-					console.log('SELECT');
 					init0();
 					gameState=GameState.START;					
 				}        
@@ -298,32 +294,26 @@ class PointerHandler {
 			case GameState.START: 
 
 				if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
-					console.log('UP');
 					movePlayer( 0,-1);
 				}        
 
 				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
-					console.log('RIGHT');
 					movePlayer( 1, 0);
 				}        
 
 				if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
-					console.log('DOWN');
 					movePlayer( 0, 1);
 				}        
 
 				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
-					console.log('LEFT');
 					movePlayer(-1, 0);
 				}        
 
 				if(inrect(pointer.x,pointer.y,224,288,32,32)) {
-					console.log('RESET');
 					init0();
 				}        
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
-					console.log('SELECT');
 					init1();
 					gameState=GameState.SELECT;
 				}        
@@ -333,13 +323,11 @@ class PointerHandler {
 			case GameState.COMPLETE:
 
 				if(inrect(pointer.x,pointer.y,224,288,32,32)) {
-					console.log('RESET');
 					init0();
 					gameState=GameState.START;
 				}        
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
-					console.log('SELECT');
 					init1();
 					gameState=GameState.SELECT;
 				}        
@@ -353,7 +341,6 @@ class PointerHandler {
 		if (!this.isDragging) return;
 
 		const coords = this.getCoordinates(event);
-		console.log('Pointer Move:', coords);
 
 		// TODO: Add your move/drag logic here (e.g., update element position)
 		pointer.x=coords.x;
@@ -372,7 +359,6 @@ class PointerHandler {
 		}
 
 		const coords = this.getCoordinates(event);
-		console.log('Pointer Up:',coords);
 
 		// TODO: Add your end/release logic here
 		pointer.x=coords.x;
