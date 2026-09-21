@@ -212,14 +212,15 @@ function movePlayer(dx,dy) {
 		player.moves++;
 	}
 
-	drawText(ctx,font,"MOVES:"+String(player.moves).padStart(4),2,16*14+2,2);
-	drawText(ctx,font,"GOALS:"+String(player.goals).padStart(4),2,16*15+2,2);
+	drawText(ctx,font,"GOALS:"+String(player.goals).padStart(4),2,16*14+2,2);
+	drawText(ctx,font,"MOVES:"+String(player.moves).padStart(4),2,16*15+2,2);
 
 	if(player.moves==1) {
 		timerInterval=setInterval(timer,1000);
 	}
 
 	if(player.goals==0) {
+		drawText(ctx,font,"COMPLETE  ",2,16*14+2,2);
 		clearInterval(timerInterval);
 	}
 }
@@ -273,12 +274,14 @@ class PointerHandler {
 					console.log('LEFT');
 					if(currentLevel>0) currentLevel--;
 					drawLevel(ctx,levels[currentLevel],sprites,0,0,1);
+					drawText(ctx,font,"LEVEL:"+String(currentLevel).padStart(4),10*13+2,16*14+2,2);
 				}        
 
 				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
 					console.log('RIGHT');
 					if(currentLevel<levels.length-1) currentLevel++;
 					drawLevel(ctx,levels[currentLevel],sprites,0,0,1);
+					drawText(ctx,font,"LEVEL:"+String(currentLevel).padStart(4),10*13+2,16*14+2,2);
 				}        
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
