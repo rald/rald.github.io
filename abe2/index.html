@@ -413,7 +413,7 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 }
 
 function drawText(ctx,fnt,txt,x,y,s) {
-	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:";
+	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:'";
 	var a=x,b=y;
 	for(var k=0;k<txt.length;k++) {
 		var l=chars.indexOf(txt[k]);
@@ -508,7 +508,8 @@ function init0() {
 	drawText(ctx,font,"GOALS:"+String(player.goals).padStart(4),2,16*14+2,2);
 	drawText(ctx,font,"MOVES:"+String(player.moves).padStart(4),2,16*15+2,2);
 	drawText(ctx,font,"LEVEL:"+String(currentLevel+1).padStart(4),10*13+2,16*14+2,2);
-	drawText(ctx,font,"TIME: "+String(elapsedTime).padStart(4),10*13+2,16*15+2,2);}
+	drawText(ctx,font,"TIME: "+String(elapsedTime).padStart(4),10*13+2,16*15+2,2);	drawText(ctx,font,"ABE'S BOX WORLD",(256-6*15*2)/2,16*23,2);
+}
 
 function init1() {
 	clearInterval(timerInterval);
@@ -518,6 +519,7 @@ function init1() {
 	drawText(ctx,font,"SELECT [X]",2,16*14+2,2);
 	drawText(ctx,font,"LEVEL:"+String(currentLevel+1).padStart(4),10*13+2,16*14+2,2);
 	drawText(ctx,font,"CHANGE [LEFT] [RIGHT]",2,16*15+2,2);
+	drawText(ctx,font,"ABE'S BOX WORLD",(256-6*15*2)/2,16*23,2);
 }
 
 init1();
