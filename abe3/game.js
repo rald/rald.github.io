@@ -3,6 +3,7 @@ var ctx=canvas.getContext("2d");
 
 canvas.width=256;
 canvas.height=256+128;
+canvas.style.border = "1px solid white";
 
 function inrect(x,y,rx,ry,rw,rh) {
 	return x>=rx && x<rx+rw && y>=ry && y<ry+rh;
@@ -30,6 +31,7 @@ function drawPad(ctx,pad) {
 
 	drawCanvas(ctx,pad,160,288,2,4);
 	drawCanvas(ctx,pad,224,288,2,5);
+
 /*
 	drawCanvas(ctx,pad,192,256,2,6);
 	drawCanvas(ctx,pad,192,320,2,7);
@@ -38,21 +40,25 @@ function drawPad(ctx,pad) {
 
 function drawLevel(ctx,lvl,spr,x,y,s) {
 	var hex="0123456789ABCDEF";
-	for(var j=0;j<16;j++) {
-		for(var i=0;i<16;i++) {
-			var k=lvl.data[j][i];
+	for(var j=0;j<lvl.h;j++) {
+		for(var i=0;i<lvl.w;i++) {
+			var k=lvl.d[j][i];
 			var c=hex.indexOf(k);
 			if(c!=-1) {
-        var color=c & 3;
-        var star=c & 4;
-        var player=c & 8;
-drawCanvas(ctx,spr,x+i*16,y+j*16,1,color);
-if(star)drawCanvas(ctx,spr,x+i*16,y+j*16,1,4);
-if(player)drawCanvas(ctx,spr,x+i*16,y+j*16,1,5+lvl.dir);
+		        var color=c & 3;
+		        var star=c & 4;
+				drawCanvas(ctx,spr,x+i*16,y+j*16,1,color);
+				if(star)drawCanvas(ctx,spr,x+i*16,y+j*16,1,4);
 			}
 		}
 	}
-} 
+
+	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
+
+	ctx.strokeStyle="#FFFFFF";
+	ctx.strokeRect(0.5,0.5,256,256);
+
+}
 
 var pointer={
 	x:0,
