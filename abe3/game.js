@@ -48,6 +48,10 @@ function drawPad(ctx,pad) {
 	drawCanvas(ctx,pad,192,256,2,6);
 	drawCanvas(ctx,pad,192,320,2,7);
 */
+
+	drawBorder(ctx);
+
+	drawText(ctx,font,"ABE'S STAR WORLD",(canvas.width-16*12)/2,canvas.height-14,2);
 }
 
 function drawText(ctx,fnt,txt,x,y,s) {
@@ -80,11 +84,62 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 			}
 		}
 	}
-
-//	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
-
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
+	drawGrid(ctx,16,16,x,y,16,palette[1]);
+}
 
+function drawBorder(ctx) {
+	ctx.strokeStyle=palette[12];
+	ctx.strokeRect(0.5,0.5,256,256);
+
+	ctx.strokeStyle=palette[12];
+	ctx.strokeRect(0,0,canvas.width,canvas.height);
+	ctx.strokeRect(0,0,canvas.width,256);
+}
+
+function drawGrid(ctx,w,h,x,y,s,c) {
+	for(var i=1;i<w;i++) {
+		ctx.beginPath();
+		ctx.strokeStyle=c;
+		ctx.moveTo(x+i*s,y);
+		ctx.lineTo(x+i*s,y+h*s);
+		ctx.stroke();
+		ctx.closePath();
+	}
+	for(var i=1;i<h;i++) {
+		ctx.beginPath();
+		ctx.strokeStyle=c;
+		ctx.moveTo(x,y+i*s);
+		ctx.lineTo(x+w*s,y+i*s);
+		ctx.stroke();
+		ctx.closePath();
+	}
+}
+
+function drawCode(ctx,code,spr,x,y,s) {
+
+	for(var i=0;i<code.w;i++) {
+		drawCanvas(ctx,spr,x+i*16+16,y,s,26);
+		drawCanvas(ctx,spr,x+i*16+16,y,s,13+i);
+	}
+
+	for(var i=0;i<code.h;i++) {
+		drawCanvas(ctx,spr,x,y+i*16+16,s,26);
+		drawCanvas(ctx,spr,x,y+i*16+16,s,13+i);
+	}
+
+	for(var j=0;j<code.h;j++) {
+		for(var i=0;i<code.w;i++) {
+			drawCanvas(ctx,spr,x+i*16+16,y+j*16+16,s,code.d[j][i]);
+		}
+	}
+
+	drawGrid(ctx,code.w+1,code.h+1,x,y,16,palette[1]);
+}
+
+function drawCursor(ctx,code) {
+	ctx.strokeStyle=palette[12];
+	ctx.strokeRect(code.x*16+16,code.y*16+16,16,16);
 }
 
 var pointer={
@@ -128,7 +183,34 @@ class PointerHandler {
 		pointer.isDown=true;
 
 		switch(gameState) {
-			case GameState.SELECT: break;
+			case GameState.SELECT:
+
+				if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
+					console.log("up");
+				}
+
+				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
+					console.log("right");
+				}
+
+				if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
+					console.log("down");
+				}
+
+				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
+					console.log("left");
+				}
+
+				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
+					console.log("X");
+				}
+
+				if(inrect(pointer.x,pointer.y,224,288,32,32)) {
+					console.log("O");
+				}
+
+
+			break;
 			case GameState.CODE: break;
 			case GameState.PLAY: break;
 		}
@@ -188,45 +270,149 @@ function clrscr(ctx) {
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
+function handleDirection(key) {
+	switch(gameState) {
+		case GameState.SELECT:
+		    switch (key) {
+		        case 'ArrowLeft':
+		        	console.log("ArrowLeft");
+		        	if(currentLevel>0) {
+		        		currentLevel--;
+		        		level={...levels[currentLevel]};
+		        		clrscr(ctx);
+						drawLevel(ctx,level,sprites,0,0,1);
+		        		drawPad(ctx,pad);
+		        	}
+					break;
+		        case 'ArrowRight':
+		        	console.log("ArrowRight");
+		        	if(currentLevel<levels.length-1) {
+		        		currentLevel++;
+		        		level={...levels[currentLevel]};
+		        		clrscr(ctx);
+						drawLevel(ctx,level,sprites,0,0,1);
+		        		drawPad(ctx,pad);
+		        	}
+					break;
+		        case 'ArrowDown':
+		        	console.log("ArrowDown");
+					break;
+		        case 'ArrowUp':
+		        	console.log("ArrowUp");
+					break;
+				case 'Z':
+				case 'z':
+		        	console.log("X");
+		        	gameState=GameState.PLAY;
+					break;
+				case 'X':
+				case 'x':
+		        	console.log("O");
+					break;
+			}
+			break;
+		case GameState.PLAY:
+			switch(key) {
+		        case 'ArrowLeft':
+		        	console.log("ArrowLeft");
+					break;
+		        case 'ArrowRight':
+		        	console.log("ArrowRight");
+					break;
+		        case 'ArrowDown':
+		        	console.log("ArrowDown");
+					break;
+		        case 'ArrowUp':
+		        	console.log("ArrowUp");
+					break;
+				case 'Z':
+				case 'z':
+		        	console.log("X");
+		        	clrscr(ctx);
+		        	drawPad(ctx,pad);
+		        	drawCode(ctx,code,sprites,0,0,1);
+		        	drawCursor(ctx,code);
+		        	gameState=GameState.CODE;
+					break;
+				case 'X':
+				case 'x':
+		        	console.log("O");
+					break;
+				default: break;
+			}
+			break;
+		case GameState.CODE:
+			switch(key) {
+		        case 'ArrowLeft':
+		        	console.log("ArrowLeft");
+					break;
+		        case 'ArrowRight':
+		        	console.log("ArrowRight");
+					break;
+		        case 'ArrowDown':
+		        	console.log("ArrowDown");
+					break;
+		        case 'ArrowUp':
+		        	console.log("ArrowUp");
+					break;
+				case 'Z':
+				case 'z':
+		        	console.log("X");
+		        	clrscr(ctx);
+		        	drawPad(ctx,pad);
+					drawLevel(ctx,level,sprites,0,0,1);
+		        	gameState=GameState.PLAY;
+					break;
+				case 'X':
+				case 'x':
+		        	console.log("O");
+					break;
+			}
+			break;
+		default: break;
+	}
+}
+
 // Disables right-click context menu on the entire website
 window.addEventListener('contextmenu', (event) => {
   event.preventDefault();
 });
 
+window.addEventListener('keydown', (event) => {
+    // Check if the pressed key is one of the arrow keys
+
+//		console.log(event.key);
+
+    if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'X','x','Z','z'].includes(event.key)) {
+        event.preventDefault();
+        handleDirection(event.key);
+    }
+});
+
+const handler = new PointerHandler(canvas);
+
+var code={
+	w: 10,
+	h: 10,
+	x: 0,
+	y: 0,
+	d: [
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+	],
+};
+
+var currentLevel=0;
+var level={...levels[currentLevel]};
 clrscr(ctx);
-
-ctx.strokeStyle=palette[12];
-ctx.strokeRect(0,0,canvas.width,canvas.height);
-ctx.strokeRect(0,0,canvas.width,256);
-
-
-
-var level={...levels[0]};
-
 drawLevel(ctx,level,sprites,0,0,1);
-
-
-
-/*
-for(var i=0;i<10;i++) {
-	drawCanvas(ctx,sprites,i*16+16,0,1,26);
-	drawCanvas(ctx,sprites,i*16+16,0,1,i+13);
-	drawCanvas(ctx,sprites,0,i*16+16,1,26);
-	drawCanvas(ctx,sprites,0,i*16+16,1,i+13);
-}
-
-for(var j=0;j<10;j++) {
-	for(var i=0;i<10;i++) {
-		drawCanvas(ctx,sprites,i*16+16,j*16+16,1,rnd(4));
-		drawCanvas(ctx,sprites,i*16+16,j*16+16,1,rnd(17)+9);
-	}
-}
-
-*/
-
 drawPad(ctx,pad);
-
-ctx.strokeStyle="#FFFFFF";
-ctx.strokeRect(0.5,0.5,256,256);
-
-drawText(ctx,font,"ABE'S STAR WORLD",(canvas.width-16*12)/2,canvas.height-14,2);
+drawGrid(ctx);
