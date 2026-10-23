@@ -5,6 +5,18 @@ canvas.width=256;
 canvas.height=256+128;
 canvas.style.border = "1px solid white";
 
+const GameState = {
+	SELECT: "SELECT",
+	PLAY:   "PLAY",
+	CODE:   "CODE",
+};
+
+var gameState=GameState.SELECT;
+
+function rnd(x) {
+	return Math.floor(Math.random()*x);
+}
+
 function inrect(x,y,rx,ry,rw,rh) {
 	return x>=rx && x<rx+rw && y>=ry && y<ry+rh;
 }
@@ -38,6 +50,22 @@ function drawPad(ctx,pad) {
 */
 }
 
+function drawText(ctx,fnt,txt,x,y,s) {
+	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:'";
+	var a=x,b=y;
+	for(var k=0;k<txt.length;k++) {
+		var l=chars.indexOf(txt[k]);
+		if(l!=-1) {
+			drawCanvas(ctx,fnt,a,b,s,l);
+			a+=(fnt.w+1)*s;
+			if(a+(fnt.w+1)*s>=canvas.width) {
+				a=0;
+				b+=(fnt.h+1)*s;
+			}
+		}
+	}
+}
+
 function drawLevel(ctx,lvl,spr,x,y,s) {
 	var hex="0123456789ABCDEF";
 	for(var j=0;j<lvl.h;j++) {
@@ -53,10 +81,9 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 		}
 	}
 
-	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
+//	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
 
-	ctx.strokeStyle="#FFFFFF";
-	ctx.strokeRect(0.5,0.5,256,256);
+	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
 
 }
 
@@ -99,6 +126,12 @@ class PointerHandler {
 		pointer.x=coords.x;
 		pointer.y=coords.y;
 		pointer.isDown=true;
+
+		switch(gameState) {
+			case GameState.SELECT: break;
+			case GameState.CODE: break;
+			case GameState.PLAY: break;
+		}
 	}
 
 	onPointerMove(event) {
@@ -166,8 +199,34 @@ ctx.strokeStyle=palette[12];
 ctx.strokeRect(0,0,canvas.width,canvas.height);
 ctx.strokeRect(0,0,canvas.width,256);
 
+
+
 var level={...levels[0]};
 
 drawLevel(ctx,level,sprites,0,0,1);
 
+
+
+/*
+for(var i=0;i<10;i++) {
+	drawCanvas(ctx,sprites,i*16+16,0,1,26);
+	drawCanvas(ctx,sprites,i*16+16,0,1,i+13);
+	drawCanvas(ctx,sprites,0,i*16+16,1,26);
+	drawCanvas(ctx,sprites,0,i*16+16,1,i+13);
+}
+
+for(var j=0;j<10;j++) {
+	for(var i=0;i<10;i++) {
+		drawCanvas(ctx,sprites,i*16+16,j*16+16,1,rnd(4));
+		drawCanvas(ctx,sprites,i*16+16,j*16+16,1,rnd(17)+9);
+	}
+}
+
+*/
+
 drawPad(ctx,pad);
+
+ctx.strokeStyle="#FFFFFF";
+ctx.strokeRect(0.5,0.5,256,256);
+
+drawText(ctx,font,"ABE'S STAR COLLECTOR",(canvas.width-20*12)/2,canvas.height-14,2);
