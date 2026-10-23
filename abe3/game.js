@@ -229,4 +229,4 @@ drawPad(ctx,pad);
 ctx.strokeStyle="#FFFFFF";
 ctx.strokeRect(0.5,0.5,256,256);
 
-drawText(ctx,font,"ABE'S STAR WORLD",(canvas.width-20*12)/2,canvas.height-14,2);
+drawText(ctx,font,"ABE'S STAR WORLD",(canvas.width-16*12)/2,canvas.height-14,2);
