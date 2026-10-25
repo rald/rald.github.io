@@ -5,13 +5,24 @@ canvas.width=256;
 canvas.height=256+128;
 canvas.style.border = "1px solid white";
 
+// Disable smoothing inside the canvas context (for drawImage)
+ctx.imageSmoothingEnabled = false;
+ctx.webkitImageSmoothingEnabled = false; // Safari fallback
+ctx.mozImageSmoothingEnabled = false;    // Firefox fallback
+
 const GameState = {
 	SELECT: "SELECT",
 	PLAY:   "PLAY",
 	CODE:   "CODE",
 };
 
-var gameState=GameState.SELECT;
+const CodeState = {
+	EDIT: "EDIT",
+	MENU: "MENU",
+}
+
+var gameState = GameState.SELECT;
+var codeState = CodeState.EDIT;
 
 function rnd(x) {
 	return Math.floor(Math.random()*x);
@@ -19,6 +30,11 @@ function rnd(x) {
 
 function inrect(x,y,rx,ry,rw,rh) {
 	return x>=rx && x<rx+rw && y>=ry && y<ry+rh;
+}
+
+function clrscr(ctx) {
+	ctx.fillStyle = palette[0];
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
 function drawCanvas(ctx,cvs,x,y,s,f) {
@@ -98,7 +114,7 @@ function drawBorder(ctx) {
 }
 
 function drawGrid(ctx,w,h,x,y,s,c) {
-	for(var i=1;i<w;i++) {
+	for(var i=0;i<=w;i++) {
 		ctx.beginPath();
 		ctx.strokeStyle=c;
 		ctx.moveTo(x+i*s,y);
@@ -106,7 +122,7 @@ function drawGrid(ctx,w,h,x,y,s,c) {
 		ctx.stroke();
 		ctx.closePath();
 	}
-	for(var i=1;i<h;i++) {
+	for(var i=0;i<=h;i++) {
 		ctx.beginPath();
 		ctx.strokeStyle=c;
 		ctx.moveTo(x,y+i*s);
@@ -137,9 +153,35 @@ function drawCode(ctx,code,spr,x,y,s) {
 	drawGrid(ctx,code.w+1,code.h+1,x,y,16,palette[1]);
 }
 
-function drawCursor(ctx,code) {
-	ctx.strokeStyle=palette[12];
-	ctx.strokeRect(code.x*16+16,code.y*16+16,16,16);
+function drawCodeTile(ctx,code,spr) {
+	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,code.d[code.y][code.x]);
+	drawGrid(ctx,code.w+1,code.h+1,0,0,16,palette[1]);
+}
+
+function drawCodeCursor(ctx,code,spr) {
+	drawCodeTile(ctx,code,spr);
+	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,31);
+}
+
+function eraseCodeCursor(ctx,code,spr) {
+	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,32);
+	drawCodeTile(ctx,code,spr);
+}
+
+function drawCommandMenu(ctx,menu,spr) {
+	for(var j=0;j<menu.d.length;j++) {
+		for(var i=0;i<menu.d[j].length;i++) {
+			drawCanvas(ctx,spr,menu.ox+i*16,menu.oy+j*16,1,menu.d[j][i]);
+		}
+	}
+}
+
+function drawCommandMenuCursor(ctx,menu,spr) {
+	drawCanvas(ctx,spr,menu.x*16+menu.ox,menu.y*16+menu.oy,1,31);
+}
+
+function eraseCommandMenuCursor(ctx,menu,spr) {
+	drawCanvas(ctx,spr,menu.x*16+menu.ox,menu.y*16+menu.oy,1,32);
 }
 
 var pointer={
@@ -187,26 +229,32 @@ class PointerHandler {
 
 				if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
 					console.log("up");
+					handleDirection("ArrowUp");
 				}
 
 				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
 					console.log("right");
+					handleDirection("ArrowRight");
 				}
 
 				if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
 					console.log("down");
+					handleDirection("ArrowDown");
 				}
 
 				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
 					console.log("left");
-				}
+					handleDirection("ArrowLeft");
+			}
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
 					console.log("X");
+					handleDirection("Z");
 				}
 
 				if(inrect(pointer.x,pointer.y,224,288,32,32)) {
 					console.log("O");
+					handleDirection("X");
 				}
 
 
@@ -263,11 +311,6 @@ class PointerHandler {
 		window.removeEventListener('pointerup', this.onPointerUp);
 		window.removeEventListener('pointercancel', this.onPointerUp);
 	}
-}
-
-function clrscr(ctx) {
-	ctx.fillStyle=palette[0];
-	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
 function handleDirection(key) {
@@ -331,7 +374,8 @@ function handleDirection(key) {
 		        	clrscr(ctx);
 		        	drawPad(ctx,pad);
 		        	drawCode(ctx,code,sprites,0,0,1);
-		        	drawCursor(ctx,code);
+		        	drawCodeCursor(ctx,code,sprites);
+		        	drawCommandMenu(ctx,commandMenu,sprites,0,14*16);
 		        	gameState=GameState.CODE;
 					break;
 				case 'X':
@@ -342,32 +386,93 @@ function handleDirection(key) {
 			}
 			break;
 		case GameState.CODE:
-			switch(key) {
-		        case 'ArrowLeft':
-		        	console.log("ArrowLeft");
+
+			switch(codeState) {
+				case CodeState.EDIT:
+					switch(key) {
+				        case 'ArrowLeft':
+				        	console.log("ArrowLeft");
+							eraseCodeCursor(ctx,code,sprites);
+				        	if(code.x>0) code.x--;
+				        	drawCodeCursor(ctx,code,sprites);
+							break;
+				        case 'ArrowRight':
+				        	console.log("ArrowRight");
+							eraseCodeCursor(ctx,code,sprites);
+				        	if(code.x<code.w-1) code.x++;
+				        	drawCodeCursor(ctx,code,sprites);
+							break;
+				        case 'ArrowDown':
+				        	console.log("ArrowDown");
+							eraseCodeCursor(ctx,code,sprites);
+				        	if(code.y<code.h-1) code.y++;
+				        	drawCodeCursor(ctx,code,sprites);
+							break;
+				        case 'ArrowUp':
+				        	console.log("ArrowUp");
+							eraseCodeCursor(ctx,code,sprites);
+				        	if(code.y>0) code.y--;
+				        	drawCodeCursor(ctx,code,sprites);
+							break;
+						case 'Z':
+						case 'z':
+				        	console.log("X");
+				        	clrscr(ctx);
+				        	drawPad(ctx,pad);
+							drawLevel(ctx,level,sprites,0,0,1);
+				        	gameState=GameState.PLAY;
+							break;
+						case 'X':
+						case 'x':
+				        	console.log("O");
+				        	eraseCodeCursor(ctx,code,sprites);
+				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+							codeState=CodeState.MENU;
+							break;
+					}
 					break;
-		        case 'ArrowRight':
-		        	console.log("ArrowRight");
+				case CodeState.MENU:
+					switch(key) {
+				        case 'ArrowLeft':
+				        	console.log("ArrowLeft");
+				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+				        	if(commandMenu.x>0) commandMenu.x--;
+				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+							break;
+				        case 'ArrowRight':
+				        	console.log("ArrowRight");
+				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+				        	if(commandMenu.x<commandMenu.d[commandMenu.y].length-1) commandMenu.x++;
+				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+							break;
+				        case 'ArrowDown':
+				        	console.log("ArrowDown");
+				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+				        	if(commandMenu.y<commandMenu.d.length-1) commandMenu.y++;
+				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+							break;
+				        case 'ArrowUp':
+				        	console.log("ArrowUp");
+				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+				        	if(commandMenu.y>0) commandMenu.y--;
+				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+							break;
+						case 'Z':
+						case 'z':
+				        	console.log("X");
+							break;
+						case 'X':
+						case 'x':
+				        	console.log("O");
+				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+				        	drawCodeCursor(ctx,code,sprites);
+							codeState=CodeState.EDIT;
+							break;
+					}
 					break;
-		        case 'ArrowDown':
-		        	console.log("ArrowDown");
-					break;
-		        case 'ArrowUp':
-		        	console.log("ArrowUp");
-					break;
-				case 'Z':
-				case 'z':
-		        	console.log("X");
-		        	clrscr(ctx);
-		        	drawPad(ctx,pad);
-					drawLevel(ctx,level,sprites,0,0,1);
-		        	gameState=GameState.PLAY;
-					break;
-				case 'X':
-				case 'x':
-		        	console.log("O");
-					break;
+				default: break;
 			}
+
 			break;
 		default: break;
 	}
@@ -391,7 +496,7 @@ window.addEventListener('keydown', (event) => {
 
 const handler = new PointerHandler(canvas);
 
-var code={
+var code = {
 	w: 10,
 	h: 10,
 	x: 0,
@@ -409,6 +514,17 @@ var code={
 		[0,0,0,0,0,0,0,0,0,0],
 	],
 };
+
+var commandMenu = {
+	ox:     0,
+	oy: 14*16,
+	x: 0,
+	y: 0,
+	d: [
+		[9,10,11,12,1,2,3,23,24,25],
+		[13,14,15,16,16,18,19,20,21,22],
+	],
+}
 
 var currentLevel=0;
 var level={...levels[currentLevel]};
