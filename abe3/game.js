@@ -154,6 +154,7 @@ function drawCode(ctx,code,spr,x,y,s) {
 }
 
 function drawCodeTile(ctx,code,spr) {
+	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,0);
 	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,code.d[code.y][code.x]);
 	drawGrid(ctx,code.w+1,code.h+1,0,0,16,palette[1]);
 }
@@ -174,14 +175,26 @@ function drawCommandMenu(ctx,menu,spr) {
 			drawCanvas(ctx,spr,menu.ox+i*16,menu.oy+j*16,1,menu.d[j][i]);
 		}
 	}
+	for(var j=0;j<menu.d.length;j++) {
+		drawGrid(ctx,menu.d[j].length,1,menu.ox,menu.oy+j*16,16,palette[1]);
+	}
+}
+
+function drawCommandMenuTile(ctx,menu,spr) {
+	drawCanvas(ctx,spr,menu.ox+menu.x*16,menu.oy+menu.y*16,1,menu.d[menu.y][menu.x]);
+	for(var j=0;j<menu.d.length;j++) {
+		drawGrid(ctx,menu.d[j].length,1,menu.ox,menu.oy+j*16,16,palette[1]);
+	}
 }
 
 function drawCommandMenuCursor(ctx,menu,spr) {
+	drawCommandMenuTile(ctx,menu,spr);
 	drawCanvas(ctx,spr,menu.x*16+menu.ox,menu.y*16+menu.oy,1,31);
 }
 
 function eraseCommandMenuCursor(ctx,menu,spr) {
 	drawCanvas(ctx,spr,menu.x*16+menu.ox,menu.y*16+menu.oy,1,32);
+	drawCommandMenuTile(ctx,menu,spr);
 }
 
 var pointer={
@@ -245,7 +258,7 @@ class PointerHandler {
 				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
 					console.log("left");
 					handleDirection("ArrowLeft");
-			}
+				}
 
 				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
 					console.log("X");
@@ -464,7 +477,9 @@ function handleDirection(key) {
 						case 'X':
 						case 'x':
 				        	console.log("O");
+				        	code.d[code.y][code.x]=commandMenu.d[commandMenu.y][commandMenu.x];
 				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+							drawCodeTile(ctx,code,sprites);
 				        	drawCodeCursor(ctx,code,sprites);
 							codeState=CodeState.EDIT;
 							break;
@@ -521,8 +536,8 @@ var commandMenu = {
 	x: 0,
 	y: 0,
 	d: [
-		[9,10,11,12,1,2,3,23,24,25],
-		[13,14,15,16,16,18,19,20,21,22],
+		[ 9,10,11,12, 1, 2, 3,23,24,25, 0],
+		[13,14,15,16,16,18,19,20,21,22,33],
 	],
 }
 
