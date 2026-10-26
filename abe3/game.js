@@ -281,6 +281,7 @@ class PointerHandler {
 }
 
 function handleDirection(key) {
+
 	switch(gameState) {
 
 		case GameState.SELECT:
@@ -347,6 +348,7 @@ function handleDirection(key) {
 		        	drawCode(ctx,code,sprites,0,0,1);
 		        	drawCodeCursor(ctx,code,sprites);
 		        	drawCommandMenu(ctx,commandMenu,sprites,0,14*16);
+					codeState=CodeState.EDIT;
 		        	gameState=GameState.CODE;
 					break;
 				case 'X':
@@ -392,6 +394,7 @@ function handleDirection(key) {
 				        	clrscr(ctx);
 				        	drawPad(ctx,pad);
 							drawLevel(ctx,level,sprites,0,0,1);
+							codeState=CodeState.EDIT;
 				        	gameState=GameState.PLAY;
 							break;
 						case 'X':
