@@ -1,29 +1,3 @@
-var canvas=document.getElementById("canvas");
-var ctx=canvas.getContext("2d");
-
-canvas.width=256;
-canvas.height=256+128;
-canvas.style.border = "1px solid white";
-
-// Disable smoothing inside the canvas context (for drawImage)
-ctx.imageSmoothingEnabled = false;
-ctx.webkitImageSmoothingEnabled = false; // Safari fallback
-ctx.mozImageSmoothingEnabled = false;    // Firefox fallback
-
-const GameState = {
-	SELECT: "SELECT",
-	PLAY:   "PLAY",
-	CODE:   "CODE",
-};
-
-const CodeState = {
-	EDIT: "EDIT",
-	MENU: "MENU",
-}
-
-var gameState = GameState.SELECT;
-var codeState = CodeState.EDIT;
-
 function rnd(x) {
 	return Math.floor(Math.random()*x);
 }
@@ -197,12 +171,6 @@ function eraseCommandMenuCursor(ctx,menu,spr) {
 	drawCommandMenuTile(ctx,menu,spr);
 }
 
-var pointer={
-	x:0,
-	y:0,
-	isDown:false
-};
-
 class PointerHandler {
 	constructor(element) {
 		this.element = element;
@@ -237,44 +205,30 @@ class PointerHandler {
 		pointer.y=coords.y;
 		pointer.isDown=true;
 
-		switch(gameState) {
-			case GameState.SELECT:
-
-				if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
-					console.log("up");
-					handleDirection("ArrowUp");
-				}
-
-				if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
-					console.log("right");
-					handleDirection("ArrowRight");
-				}
-
-				if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
-					console.log("down");
-					handleDirection("ArrowDown");
-				}
-
-				if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
-					console.log("left");
-					handleDirection("ArrowLeft");
-				}
-
-				if(inrect(pointer.x,pointer.y,160,288,32,32)) {
-					console.log("X");
-					handleDirection("Z");
-				}
-
-				if(inrect(pointer.x,pointer.y,224,288,32,32)) {
-					console.log("O");
-					handleDirection("X");
-				}
-
-
-			break;
-			case GameState.CODE: break;
-			case GameState.PLAY: break;
+		if(inrect(pointer.x,pointer.y, 32,256,32,32)) {
+			handleDirection("ArrowUp");
 		}
+
+		if(inrect(pointer.x,pointer.y, 64,288,32,32)) {
+			handleDirection("ArrowRight");
+		}
+
+		if(inrect(pointer.x,pointer.y, 32,320,32,32)) {
+			handleDirection("ArrowDown");
+		}
+
+		if(inrect(pointer.x,pointer.y,  0,288,32,32)) {
+			handleDirection("ArrowLeft");
+		}
+
+		if(inrect(pointer.x,pointer.y,160,288,32,32)) {
+			handleDirection("Z");
+		}
+
+		if(inrect(pointer.x,pointer.y,224,288,32,32)) {
+			handleDirection("X");
+		}
+
 	}
 
 	onPointerMove(event) {
@@ -328,7 +282,9 @@ class PointerHandler {
 
 function handleDirection(key) {
 	switch(gameState) {
+
 		case GameState.SELECT:
+
 		    switch (key) {
 		        case 'ArrowLeft':
 		        	console.log("ArrowLeft");
@@ -367,7 +323,9 @@ function handleDirection(key) {
 					break;
 			}
 			break;
+
 		case GameState.PLAY:
+
 			switch(key) {
 		        case 'ArrowLeft':
 		        	console.log("ArrowLeft");
@@ -398,6 +356,7 @@ function handleDirection(key) {
 				default: break;
 			}
 			break;
+
 		case GameState.CODE:
 
 			switch(codeState) {
@@ -473,6 +432,11 @@ function handleDirection(key) {
 						case 'Z':
 						case 'z':
 				        	console.log("X");
+				        	clrscr(ctx);
+				        	drawPad(ctx,pad);
+							drawLevel(ctx,level,sprites,0,0,1);
+							codeState=CodeState.EDIT;
+				        	gameState=GameState.PLAY;
 							break;
 						case 'X':
 						case 'x':
@@ -500,14 +464,43 @@ window.addEventListener('contextmenu', (event) => {
 
 window.addEventListener('keydown', (event) => {
     // Check if the pressed key is one of the arrow keys
-
-//		console.log(event.key);
-
-    if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'X','x','Z','z'].includes(event.key)) {
+    if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'X', 'x', 'Z', 'z'].includes(event.key)) {
         event.preventDefault();
         handleDirection(event.key);
     }
 });
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+canvas.width = 256;
+canvas.height = 256+128;
+canvas.style.border = "1px solid white";
+
+// Disable smoothing inside the canvas context (for drawImage)
+ctx.imageSmoothingEnabled = false;
+ctx.webkitImageSmoothingEnabled = false; // Safari fallback
+ctx.mozImageSmoothingEnabled = false;    // Firefox fallback
+
+const GameState = {
+	SELECT: "SELECT",
+	PLAY:   "PLAY",
+	CODE:   "CODE",
+};
+
+const CodeState = {
+	EDIT: "EDIT",
+	MENU: "MENU",
+}
+
+var pointer = {
+	x:0,
+	y:0,
+	isDown:false
+};
+
+var gameState = GameState.SELECT;
+var codeState = CodeState.EDIT;
 
 const handler = new PointerHandler(canvas);
 
