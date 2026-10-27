@@ -75,7 +75,7 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 		}
 	}
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
-	drawGrid(ctx,16,16,x,y,16,palette[1]);
+	drawGrid(ctx,lvl.w,lvl.h,x,y,16,palette[1]);
 }
 
 function drawBorder(ctx) {
@@ -246,16 +246,16 @@ function showMenuInfo(ctx,font,menu) {
     case 23: drawText(ctx,font,"PAINT RED",3,13*16,2); break;
     case 24: drawText(ctx,font,"PAINT GREEN",3,13*16,2); break;
     case 25: drawText(ctx,font,"PAINT BLUE",3,13*16,2); break;
-    case 13: drawText(ctx,font,"CALL FN 0",3,13*16,2); break;
-    case 14: drawText(ctx,font,"CALL FN 1",3,13*16,2); break;
-    case 15: drawText(ctx,font,"CALL FN 2",3,13*16,2); break;
-    case 16: drawText(ctx,font,"CALL FN 3",3,13*16,2); break;
-    case 17: drawText(ctx,font,"CALL FN 4",3,13*16,2); break;
-    case 18: drawText(ctx,font,"CALL FN 5",3,13*16,2); break;
-    case 19: drawText(ctx,font,"CALL FN 6",3,13*16,2); break;
-    case 20: drawText(ctx,font,"CALL FN 7",3,13*16,2); break;
-    case 21: drawText(ctx,font,"CALL FN 8",3,13*16,2); break;
-    case 22: drawText(ctx,font,"CALL FN 9",3,13*16,2); break;
+    case 13: drawText(ctx,font,"CALL F0",3,13*16,2); break;
+    case 14: drawText(ctx,font,"CALL F1",3,13*16,2); break;
+    case 15: drawText(ctx,font,"CALL F2",3,13*16,2); break;
+    case 16: drawText(ctx,font,"CALL F3",3,13*16,2); break;
+    case 17: drawText(ctx,font,"CALL F4",3,13*16,2); break;
+    case 18: drawText(ctx,font,"CALL F5",3,13*16,2); break;
+    case 19: drawText(ctx,font,"CALL F6",3,13*16,2); break;
+    case 20: drawText(ctx,font,"CALL F7",3,13*16,2); break;
+    case 21: drawText(ctx,font,"CALL F8",3,13*16,2); break;
+    case 22: drawText(ctx,font,"CALL F9",3,13*16,2); break;
     case 33: drawText(ctx,font,"ERASE",3,13*16,2); break;
   }
 }
