@@ -45,7 +45,7 @@ function drawPad(ctx,pad) {
 }
 
 function drawText(ctx,fnt,txt,x,y,s) {
-	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:'";
+	var chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789[].:'/";
 	var a=x,b=y;
 	for(var k=0;k<txt.length;k++) {
 		var l=chars.indexOf(txt[k]);
@@ -60,8 +60,9 @@ function drawText(ctx,fnt,txt,x,y,s) {
 	}
 }
 
-function drawLevel(ctx,lvl,spr,x,y,s) {
+function drawLevel(ctx,lvl,spr) {
 	var hex="0123456789ABCDEF";
+	lvl.stars=0;
 	for(var j=0;j<lvl.h;j++) {
 		for(var i=0;i<lvl.w;i++) {
 			var k=lvl.d[j][i];
@@ -69,13 +70,18 @@ function drawLevel(ctx,lvl,spr,x,y,s) {
 			if(c!=-1) {
 		        var color=c & 3;
 		        var star=c & 4;
-				drawCanvas(ctx,spr,x+i*16,y+j*16,1,color);
-				if(star)drawCanvas(ctx,spr,x+i*16,y+j*16,1,4);
+				drawCanvas(ctx,spr,i*16,j*16,1,color);
+				if(star) {
+				  drawCanvas(ctx,spr,i*16,j*16,1,4);
+				  lvl.stars++;
+				}
 			}
 		}
 	}
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,5+lvl.f);
-	drawGrid(ctx,16,16,x,y,16,palette[1]);
+	drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
+	
+	drawText(ctx,font,"LEVEL: "+currentLevel.toString()+" STARS: "+lvl.stars.toString(),3,14*16,2);
 }
 
 function drawBorder(ctx) {
@@ -108,38 +114,36 @@ function drawGrid(ctx,w,h,x,y,s,c) {
 
 function drawCode(ctx,code,spr,x,y,s) {
 
-	for(var i=0;i<code.w;i++) {
-		drawCanvas(ctx,spr,x+i*16+16,y,s,26);
-		drawCanvas(ctx,spr,x+i*16+16,y,s,13+i);
-	}
-
 	for(var i=0;i<code.h;i++) {
-		drawCanvas(ctx,spr,x,y+i*16+16,s,26);
-		drawCanvas(ctx,spr,x,y+i*16+16,s,13+i);
+		drawCanvas(ctx,spr,x,y+i*16,s,26);
+		drawCanvas(ctx,spr,x,y+i*16,s,34);
+		drawCanvas(ctx,spr,x+16,y+i*16,s,26);
+		drawCanvas(ctx,spr,x+16,y+i*16,s,13+i);
 	}
 
 	for(var j=0;j<code.h;j++) {
 		for(var i=0;i<code.w;i++) {
-			drawCanvas(ctx,spr,x+i*16+16,y+j*16+16,s,code.d[j][i]);
+			drawIns(ctx,code,spr,i,j);
 		}
 	}
 
-	drawGrid(ctx,code.w+1,code.h+1,x,y,16,palette[1]);
+drawGrid(ctx,code.w+2,code.h,x,y,16,palette[1]);
+
 }
 
 function drawCodeTile(ctx,code,spr) {
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,0);
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,code.d[code.y][code.x]);
-	drawGrid(ctx,code.w+1,code.h+1,0,0,16,palette[1]);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,0);
+	drawIns(ctx,code,spr,code.x,code.y);
+	drawGrid(ctx,code.w+2,code.h,0,0,16,palette[1]);
 }
 
 function drawCodeCursor(ctx,code,spr) {
 	drawCodeTile(ctx,code,spr);
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,31);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,31);
 }
 
 function eraseCodeCursor(ctx,code,spr) {
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,32);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,32);
 	drawCodeTile(ctx,code,spr);
 }
 
@@ -169,6 +173,131 @@ function drawCommandMenuCursor(ctx,menu,spr) {
 function eraseCommandMenuCursor(ctx,menu,spr) {
 	drawCanvas(ctx,spr,menu.x*16+menu.ox,menu.y*16+menu.oy,1,32);
 	drawCommandMenuTile(ctx,menu,spr);
+}
+
+function drawIns(ctx,code,spr,x,y) {
+	var clr = code.d[y][x] & 0b11;
+	var ins = (code.d[y][x]>>2) & 0b11111;
+
+  switch(ins) {
+    case 0b00000: cmd=32; break;
+    case 0b00001: cmd=9; break;
+    case 0b00010: cmd=10; break;
+    case 0b00011: cmd=11; break;
+    case 0b00100: cmd=12; break;
+    case 0b00101: cmd=23; break;
+    case 0b00110: cmd=24; break;
+    case 0b00111: cmd=25; break;
+    case 0b01000: cmd=13; break;
+    case 0b01001: cmd=14; break;
+    case 0b01010: cmd=15; break;
+    case 0b01011: cmd=16; break;
+    case 0b01100: cmd=17; break;
+    case 0b01101: cmd=18; break;
+    case 0b01110: cmd=19; break;
+    case 0b01111: cmd=20; break;
+    case 0b10000: cmd=21; break;
+    case 0b10001: cmd=22; break;
+  }
+
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,0);
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,clr);
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,cmd);
+}
+
+function updateCode(code,menu) {
+	var cmd = menu.d[menu.y][menu.x];
+	var clr = code.d[code.y][code.x] & 0b11;
+	var ins = (code.d[code.y][code.x]>>2) & 0b11111;
+	
+  switch(cmd) {
+    case 0: clr=0b00; break;
+    case 1: clr=0b01; break;
+    case 2: clr=0b10; break;
+    case 3: clr=0b11; break;
+    case  9: ins=0b00001; break;
+    case 10: ins=0b00010; break;
+    case 11: ins=0b00011; break;
+    case 12: ins=0b00100; break;
+    case 23: ins=0b00101; break;
+    case 24: ins=0b00110; break;
+    case 25: ins=0b00111; break;
+    case 13: ins=0b01000; break;
+    case 14: ins=0b01001; break;
+    case 15: ins=0b01010; break;
+    case 16: ins=0b01011; break;
+    case 17: ins=0b01100; break;
+    case 18: ins=0b01101; break;
+    case 19: ins=0b01110; break;
+    case 20: ins=0b01111; break;
+    case 21: ins=0b10000; break;
+    case 22: ins=0b10001; break;
+    case 33: ins=0b00000; clr=0b00; break;
+  }
+
+  code.d[code.y][code.x]=(ins<<2) | clr;
+}
+
+function showMenuInfo(ctx,font,menu) {
+  var cmd=menu.d[menu.y][menu.x];
+  switch(cmd) {
+    case 0: drawText(ctx,font,"ON ANY COLOR",3,13*16,2); break;
+    case 1: drawText(ctx,font,"IF ON RED",3,13*16,2); break;
+    case 2: drawText(ctx,font,"IF ON GREEN",3,13*16,2); break;
+    case 3: drawText(ctx,font,"IF ON BLUE",3,13*16,2); break;
+    case 9: drawText(ctx,font,"FORWARD",3,13*16,2); break;
+    case 10: drawText(ctx,font,"TURN RIGHT",3,13*16,2); break;
+    case 11: drawText(ctx,font,"TURN LEFT",3,13*16,2); break;
+    case 12: drawText(ctx,font,"RETURN",3,13*16,2); break;
+    case 23: drawText(ctx,font,"PAINT RED",3,13*16,2); break;
+    case 24: drawText(ctx,font,"PAINT GREEN",3,13*16,2); break;
+    case 25: drawText(ctx,font,"PAINT BLUE",3,13*16,2); break;
+    case 13: drawText(ctx,font,"CALL F0",3,13*16,2); break;
+    case 14: drawText(ctx,font,"CALL F1",3,13*16,2); break;
+    case 15: drawText(ctx,font,"CALL F2",3,13*16,2); break;
+    case 16: drawText(ctx,font,"CALL F3",3,13*16,2); break;
+    case 17: drawText(ctx,font,"CALL F4",3,13*16,2); break;
+    case 18: drawText(ctx,font,"CALL F5",3,13*16,2); break;
+    case 19: drawText(ctx,font,"CALL F6",3,13*16,2); break;
+    case 20: drawText(ctx,font,"CALL F7",3,13*16,2); break;
+    case 21: drawText(ctx,font,"CALL F8",3,13*16,2); break;
+    case 22: drawText(ctx,font,"CALL F9",3,13*16,2); break;
+    case 33: drawText(ctx,font,"ERASE",3,13*16,2); break;
+  }
+}
+
+function hideMenuInfo(ctx) {
+  ctx.fillStyle=palette[0];
+  ctx.fillRect(1,13*16,255,16);
+}
+
+function hideHelp(ctx) {
+  ctx.fillStyle=palette[0];
+  ctx.fillRect(1,15*16,255,16);
+}
+
+function showHelp(ctx,font) {
+  switch(gameState) {
+    case GameState.SELECT:
+      drawText(ctx,font,"SELECT [X] CHANGE [LEFT] [RIGHT]",3,15*16,1);
+      break;
+    case GameState.PLAY:
+      drawText(ctx,font,"CODE [X] RUN [O]",3,15*16,1);
+      break;
+    case GameState.CODE:
+      switch(codeState) {
+        case CodeState.EDIT:
+      drawText(ctx,font,"MENU [O] PLAY [X]",3,15*16,1);
+      drawText(ctx,font,"MOVE ARROWS",3,15*16+8,1);
+        break;
+        case CodeState.MENU:
+      drawText(ctx,font,"CODE [O] PLAY [X]",3,15*16,1);
+      drawText(ctx,font,"MOVE ARROWS",3,15*16+8,1);
+        break;
+      }
+      break;
+      
+  }
 }
 
 class PointerHandler {
@@ -288,39 +417,39 @@ function handleDirection(key) {
 
 		    switch (key) {
 		        case 'ArrowLeft':
-		        	console.log("ArrowLeft");
 		        	if(currentLevel>0) {
 		        		currentLevel--;
 		        		level={...levels[currentLevel]};
 		        		clrscr(ctx);
-						drawLevel(ctx,level,sprites,0,0,1);
+						drawLevel(ctx,level,sprites);
+						showHelp(ctx,font);
 		        		drawPad(ctx,pad);
 		        	}
 					break;
 		        case 'ArrowRight':
-		        	console.log("ArrowRight");
 		        	if(currentLevel<levels.length-1) {
 		        		currentLevel++;
 		        		level={...levels[currentLevel]};
 		        		clrscr(ctx);
-						drawLevel(ctx,level,sprites,0,0,1);
+						drawLevel(ctx,level,sprites);
+  					showHelp(ctx,font);
 		        		drawPad(ctx,pad);
 		        	}
 					break;
 		        case 'ArrowDown':
-		        	console.log("ArrowDown");
 					break;
 		        case 'ArrowUp':
-		        	console.log("ArrowUp");
-					break;
+		 			break;
 				case 'Z':
 				case 'z':
-		        	console.log("X");
-		        	gameState=GameState.PLAY;
+		        gameState=GameState.PLAY;
+				    clrscr(ctx);
+						drawLevel(ctx,level,sprites);
+						drawPad(ctx,pad);
+						showHelp(ctx,font);
 					break;
 				case 'X':
 				case 'x':
-		        	console.log("O");
 					break;
 			}
 			break;
@@ -329,31 +458,26 @@ function handleDirection(key) {
 
 			switch(key) {
 		        case 'ArrowLeft':
-		        	console.log("ArrowLeft");
 					break;
 		        case 'ArrowRight':
-		        	console.log("ArrowRight");
 					break;
 		        case 'ArrowDown':
-		        	console.log("ArrowDown");
 					break;
 		        case 'ArrowUp':
-		        	console.log("ArrowUp");
 					break;
 				case 'Z':
 				case 'z':
-		        	console.log("X");
+		    			codeState=CodeState.EDIT;
+		        	gameState=GameState.CODE;
 		        	clrscr(ctx);
 		        	drawPad(ctx,pad);
 		        	drawCode(ctx,code,sprites,0,0,1);
 		        	drawCodeCursor(ctx,code,sprites);
 		        	drawCommandMenu(ctx,commandMenu,sprites,0,14*16);
-					codeState=CodeState.EDIT;
-		        	gameState=GameState.CODE;
+		        	showHelp(ctx,font);
 					break;
 				case 'X':
 				case 'x':
-		        	console.log("O");
 					break;
 				default: break;
 			}
@@ -365,90 +489,92 @@ function handleDirection(key) {
 				case CodeState.EDIT:
 					switch(key) {
 				        case 'ArrowLeft':
-				        	console.log("ArrowLeft");
 							eraseCodeCursor(ctx,code,sprites);
 				        	if(code.x>0) code.x--;
 				        	drawCodeCursor(ctx,code,sprites);
 							break;
 				        case 'ArrowRight':
-				        	console.log("ArrowRight");
 							eraseCodeCursor(ctx,code,sprites);
 				        	if(code.x<code.w-1) code.x++;
 				        	drawCodeCursor(ctx,code,sprites);
 							break;
 				        case 'ArrowDown':
-				        	console.log("ArrowDown");
 							eraseCodeCursor(ctx,code,sprites);
 				        	if(code.y<code.h-1) code.y++;
 				        	drawCodeCursor(ctx,code,sprites);
 							break;
 				        case 'ArrowUp':
-				        	console.log("ArrowUp");
 							eraseCodeCursor(ctx,code,sprites);
 				        	if(code.y>0) code.y--;
 				        	drawCodeCursor(ctx,code,sprites);
 							break;
 						case 'Z':
 						case 'z':
-				        	console.log("X");
-				        	clrscr(ctx);
-				        	drawPad(ctx,pad);
-							drawLevel(ctx,level,sprites,0,0,1);
-							codeState=CodeState.EDIT;
-				        	gameState=GameState.PLAY;
+  							codeState=CodeState.EDIT;
+			        	gameState=GameState.PLAY;
+			        	clrscr(ctx);
+						    drawLevel(ctx,level,sprites);
+				       	drawPad(ctx,pad);
+                showHelp(ctx,font);
 							break;
 						case 'X':
 						case 'x':
-				        	console.log("O");
+								codeState=CodeState.MENU;
+					      hideMenuInfo(ctx);
+					      hideHelp(ctx);
 				        	eraseCodeCursor(ctx,code,sprites);
 				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
-							codeState=CodeState.MENU;
+				        	showMenuInfo(ctx,font,commandMenu);
+				        	showHelp(ctx,font);
 							break;
 					}
 					break;
 				case CodeState.MENU:
 					switch(key) {
 				        case 'ArrowLeft':
-				        	console.log("ArrowLeft");
+				        	hideMenuInfo(ctx);
 				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
 				        	if(commandMenu.x>0) commandMenu.x--;
 				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
+				        	showMenuInfo(ctx,font,commandMenu);
 							break;
 				        case 'ArrowRight':
-				        	console.log("ArrowRight");
-				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+					        hideMenuInfo(ctx);
+			        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
 				        	if(commandMenu.x<commandMenu.d[commandMenu.y].length-1) commandMenu.x++;
 				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
-							break;
+				        	showMenuInfo(ctx,font,commandMenu);							break;
 				        case 'ArrowDown':
-				        	console.log("ArrowDown");
-				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+					        	hideMenuInfo(ctx);
+			        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
 				        	if(commandMenu.y<commandMenu.d.length-1) commandMenu.y++;
 				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
-							break;
+					        	showMenuInfo(ctx,font,commandMenu);						break;
 				        case 'ArrowUp':
-				        	console.log("ArrowUp");
-				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
+							    hideMenuInfo(ctx);
+	        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
 				        	if(commandMenu.y>0) commandMenu.y--;
 				        	drawCommandMenuCursor(ctx,commandMenu,sprites);
-							break;
+				        	showMenuInfo(ctx,font,commandMenu);							break;
 						case 'Z':
 						case 'z':
-				        	console.log("X");
-				        	clrscr(ctx);
-				        	drawPad(ctx,pad);
-							drawLevel(ctx,level,sprites,0,0,1);
 							codeState=CodeState.EDIT;
-				        	gameState=GameState.PLAY;
+		        	gameState=GameState.PLAY;
+		        	clrscr(ctx);
+		        	drawPad(ctx,pad);
+							drawLevel(ctx,level,sprites);
+							showHelp(ctx,font);
 							break;
 						case 'X':
 						case 'x':
-				        	console.log("O");
-				        	code.d[code.y][code.x]=commandMenu.d[commandMenu.y][commandMenu.x];
+							codeState=CodeState.EDIT; 
+						  hideMenuInfo(ctx);
+						  hideHelp(ctx);
+							updateCode(code,commandMenu);
 				        	eraseCommandMenuCursor(ctx,commandMenu,sprites);
 							drawCodeTile(ctx,code,sprites);
-				        	drawCodeCursor(ctx,code,sprites);
-							codeState=CodeState.EDIT;
+							drawCodeCursor(ctx,code,sprites);
+							showHelp(ctx,font);
 							break;
 					}
 					break;
@@ -508,6 +634,8 @@ var codeState = CodeState.EDIT;
 const handler = new PointerHandler(canvas);
 
 var code = {
+  ox: 0,
+  oy: 0,
 	w: 10,
 	h: 10,
 	x: 0,
@@ -527,19 +655,20 @@ var code = {
 };
 
 var commandMenu = {
-	ox:     0,
-	oy: 14*16,
+	ox:     3,
+	oy: 11*16,
 	x: 0,
 	y: 0,
 	d: [
 		[ 9,10,11,12, 1, 2, 3,23,24,25, 0],
-		[13,14,15,16,16,18,19,20,21,22,33],
+		[13,14,15,16,17,18,19,20,21,22,33],
 	],
 }
 
 var currentLevel=0;
 var level={...levels[currentLevel]};
 clrscr(ctx);
-drawLevel(ctx,level,sprites,0,0,1);
+drawLevel(ctx,level,sprites);
+showHelp(ctx,font);
 drawPad(ctx,pad);
 drawGrid(ctx);
