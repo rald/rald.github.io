@@ -108,14 +108,11 @@ function drawGrid(ctx,w,h,x,y,s,c) {
 
 function drawCode(ctx,code,spr,x,y,s) {
 
-	for(var i=0;i<code.w;i++) {
-		drawCanvas(ctx,spr,x+i*16+16,y,s,26);
-		drawCanvas(ctx,spr,x+i*16+16,y,s,13+i);
-	}
-
 	for(var i=0;i<code.h;i++) {
-		drawCanvas(ctx,spr,x,y+i*16+16,s,26);
-		drawCanvas(ctx,spr,x,y+i*16+16,s,13+i);
+		drawCanvas(ctx,spr,x,y+i*16,s,26);
+		drawCanvas(ctx,spr,x,y+i*16,s,34);
+		drawCanvas(ctx,spr,x+16,y+i*16,s,26);
+		drawCanvas(ctx,spr,x+16,y+i*16,s,13+i);
 	}
 
 	for(var j=0;j<code.h;j++) {
@@ -124,22 +121,23 @@ function drawCode(ctx,code,spr,x,y,s) {
 		}
 	}
 
-	drawGrid(ctx,code.w+1,code.h+1,x,y,16,palette[1]);
+drawGrid(ctx,code.w+2,code.h,x,y,16,palette[1]);
+
 }
 
 function drawCodeTile(ctx,code,spr) {
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,0);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,0);
 	drawIns(ctx,code,spr,code.x,code.y);
-	drawGrid(ctx,code.w+1,code.h+1,0,0,16,palette[1]);
+	drawGrid(ctx,code.w+2,code.h,0,0,16,palette[1]);
 }
 
 function drawCodeCursor(ctx,code,spr) {
 	drawCodeTile(ctx,code,spr);
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,31);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,31);
 }
 
 function eraseCodeCursor(ctx,code,spr) {
-	drawCanvas(ctx,spr,code.x*16+16,code.y*16+16,1,32);
+	drawCanvas(ctx,spr,code.x*16+16+16,code.y*16,1,32);
 	drawCodeTile(ctx,code,spr);
 }
 
@@ -196,9 +194,9 @@ function drawIns(ctx,code,spr,x,y) {
     case 0b10001: cmd=22; break;
   }
 
-	drawCanvas(ctx,spr,x*16+16,y*16+16,1,0);
-	drawCanvas(ctx,spr,x*16+16,y*16+16,1,clr);
-	drawCanvas(ctx,spr,x*16+16,y*16+16,1,cmd);
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,0);
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,clr);
+	drawCanvas(ctx,spr,x*16+16+16,y*16,1,cmd);
 }
 
 function updateCode(code,menu) {
@@ -237,7 +235,7 @@ function updateCode(code,menu) {
 function showMenuInfo(ctx,font,menu) {
   var cmd=menu.d[menu.y][menu.x];
   switch(cmd) {
-    case 0: drawText(ctx,font,"NEUTRAL",3,13*16,2); break;
+    case 0: drawText(ctx,font,"ON ANY COLOR",3,13*16,2); break;
     case 1: drawText(ctx,font,"IF ON RED",3,13*16,2); break;
     case 2: drawText(ctx,font,"IF ON GREEN",3,13*16,2); break;
     case 3: drawText(ctx,font,"IF ON BLUE",3,13*16,2); break;
@@ -587,6 +585,8 @@ var codeState = CodeState.EDIT;
 const handler = new PointerHandler(canvas);
 
 var code = {
+  ox:  0,
+  oy:  0,
 	w: 10,
 	h: 10,
 	x: 0,
