@@ -577,37 +577,32 @@ function runCode(ctx,code,lvl,spr) {
 	if(clr==0 || clr==lclr) {
 		switch(ins) {
 			case 0b00001:
+				eraseLevelTile(ctx,lvl,spr);
+				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				switch(lvl.f) {
 					case 0:
-						eraseLevelTile(ctx,lvl,spr);
 						lvl.y--;
-						pickStar(ctx,lvl,font);
-						drawLevelTile(ctx,lvl,spr);
-						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 1:
-						eraseLevelTile(ctx,lvl,spr);
 						lvl.x++;
-						pickStar(ctx,lvl,font);
-						drawLevelTile(ctx,lvl,spr);
-						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 2:
-						eraseLevelTile(ctx,lvl,spr);
 						lvl.y++;
-						pickStar(ctx,lvl,font);
-						drawLevelTile(ctx,lvl,spr);
-						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 3:
-						eraseLevelTile(ctx,lvl,spr);
 						lvl.x--;
-						pickStar(ctx,lvl,font);
-						drawLevelTile(ctx,lvl,spr);
-						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					default: break;
 				}
+				if(lvl.x<0 || lvl.y<0 || lvl.x>lvl.w-1 || lvl.y>lvl.h-1 || ((lvl.d[lvl.y][lvl.x] & 0b11) == 0b00)) {
+          gameState=GameState.END;
+				  hideHelp(ctx);
+          showHelp(ctx,font);
+				  return;
+				}
+				pickStar(ctx,lvl,font);
+				drawLevelTile(ctx,lvl,spr);
+				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00010:
 				eraseLevelTile(ctx,lvl,spr);
