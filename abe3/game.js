@@ -120,9 +120,10 @@ function clrscr(ctx) {
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
-
 function initCode() {
 	var code = {
+		fx: 0,
+		fy: 13*16,
 		ox: 0,
 		oy: 0,
 		w: 10,
@@ -233,7 +234,6 @@ function loadLevel(lvl) {
 	}
 	return level;
 }
-
 
 function hideLevelInfo(ctx) {
 	ctx.fillStyle=palette[0];
@@ -357,27 +357,28 @@ function eraseCommandMenuCursor(ctx,menu,spr) {
 function drawIns(ctx,code,spr,x,y) {
 	var clr = code.d[y][x] & 0b11;
 	var ins = (code.d[y][x]>>2) & 0b11111;
+	var cmd = 0;
 
-  switch(ins) {
-    case 0b00000: cmd=32; break;
-    case 0b00001: cmd=9; break;
-    case 0b00010: cmd=10; break;
-    case 0b00011: cmd=11; break;
-    case 0b00100: cmd=12; break;
-    case 0b00101: cmd=23; break;
-    case 0b00110: cmd=24; break;
-    case 0b00111: cmd=25; break;
-    case 0b01000: cmd=13; break;
-    case 0b01001: cmd=14; break;
-    case 0b01010: cmd=15; break;
-    case 0b01011: cmd=16; break;
-    case 0b01100: cmd=17; break;
-    case 0b01101: cmd=18; break;
-    case 0b01110: cmd=19; break;
-    case 0b01111: cmd=20; break;
-    case 0b10000: cmd=21; break;
-    case 0b10001: cmd=22; break;
-  }
+	switch(ins) {
+		case 0b00000: cmd=32; break;
+		case 0b00001: cmd=9; break;
+		case 0b00010: cmd=10; break;
+		case 0b00011: cmd=11; break;
+		case 0b00100: cmd=12; break;
+		case 0b00101: cmd=23; break;
+		case 0b00110: cmd=24; break;
+		case 0b00111: cmd=25; break;
+		case 0b01000: cmd=13; break;
+		case 0b01001: cmd=14; break;
+		case 0b01010: cmd=15; break;
+		case 0b01011: cmd=16; break;
+		case 0b01100: cmd=17; break;
+		case 0b01101: cmd=18; break;
+		case 0b01110: cmd=19; break;
+		case 0b01111: cmd=20; break;
+		case 0b10000: cmd=21; break;
+		case 0b10001: cmd=22; break;
+	}
 
 	drawCanvas(ctx,spr,x*16+16+16,y*16,1,0);
 	drawCanvas(ctx,spr,x*16+16+16,y*16,1,clr);
@@ -514,6 +515,55 @@ function pickStar(ctx,lvl,font) {
 		showLevelInfo(ctx,level,font);
 		showHelp(ctx,font);
 	}
+}
+
+function hideFn(ctx,code) {
+	ctx.fillStyle=palette[0];
+	ctx.fillRect(1,code.fy,255,16);
+}
+
+function showFn(ctx,code,spr) {
+
+	drawCanvas(ctx,spr,code.fx,code.fy,1,26);
+	drawCanvas(ctx,spr,code.fx,code.fy,1,34);
+	drawCanvas(ctx,spr,code.fx+16,code.fy,1,26);
+	drawCanvas(ctx,spr,code.fx+16,code.fy,1,code.fn+13);
+
+	for(var i=0;i<code.d[code.fn].length;i++) {
+
+		var clr = code.d[code.fn][i] & 0b11;
+		var ins = (code.d[code.fn][i]>>2) & 0b11111;
+		var cmd = 0;
+
+		switch(ins) {
+			case 0b00000: cmd=32; break;
+			case 0b00001: cmd=9;  break;
+			case 0b00010: cmd=10; break;
+			case 0b00011: cmd=11; break;
+			case 0b00100: cmd=12; break;
+			case 0b00101: cmd=23; break;
+			case 0b00110: cmd=24; break;
+			case 0b00111: cmd=25; break;
+			case 0b01000: cmd=13; break;
+			case 0b01001: cmd=14; break;
+			case 0b01010: cmd=15; break;
+			case 0b01011: cmd=16; break;
+			case 0b01100: cmd=17; break;
+			case 0b01101: cmd=18; break;
+			case 0b01110: cmd=19; break;
+			case 0b01111: cmd=20; break;
+			case 0b10000: cmd=21; break;
+			case 0b10001: cmd=22; break;
+		}
+
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,0);
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,clr);
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,cmd);
+
+	}
+
+	drawGrid(ctx,code.w,1,code.fx+16+16,code.fy,16,palette[1]);
+	drawCanvas(ctx,spr,code.fx+code.ip*16+16+16,code.fy,1,31);
 }
 
 function runCode(ctx,code,lvl,spr) {
@@ -657,7 +707,6 @@ function runCode(ctx,code,lvl,spr) {
 			showHelp(ctx,font);
 		}
 	}
-
 }
 
 function handleDirection(key) {
@@ -700,6 +749,7 @@ function handleDirection(key) {
 					drawLevel(ctx,level,sprites);
 					showLevelInfo(ctx,level,font);
 					showHelp(ctx,font);
+					showFn(ctx,code,sprites);
 					drawPad(ctx,pad);
 					break;
 				case 'X':
@@ -733,6 +783,8 @@ function handleDirection(key) {
 				case 'X':
 				case 'x':
 					runCode(ctx,code,level,sprites);
+					hideFn(ctx,code);
+					showFn(ctx,code,sprites);
 					break;
 				default: break;
 			}
@@ -774,6 +826,7 @@ function handleDirection(key) {
 							drawLevel(ctx,level,sprites);
 							showLevelInfo(ctx,level,font);
 							showHelp(ctx,font);
+							showFn(ctx,code,sprites);
 							drawPad(ctx,pad);
 							break;
 						case 'X':
@@ -827,6 +880,7 @@ function handleDirection(key) {
 							drawLevel(ctx,level,sprites);
 							showLevelInfo(ctx,level,font);
 							showHelp(ctx,font);
+							showFn(ctx,code,sprites);
 				        	drawPad(ctx,pad);
 							break;
 						case 'X':
