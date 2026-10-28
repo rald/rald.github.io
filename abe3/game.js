@@ -120,6 +120,48 @@ function clrscr(ctx) {
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
+function initCode() {
+	var code = {
+		fx: 0,
+		fy: 13*16,
+		ox: 0,
+		oy: 0,
+		w: 10,
+		h: 10,
+		x:  0,
+		y:  0,
+		fn: 0,
+		ip: 0,
+		d: [
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+		],
+	};
+	return code;
+}
+
+function initCommandMenu() {
+	var commandMenu = {
+		ox:     3,
+		oy: 11*16,
+		x: 0,
+		y: 0,
+		d: [
+			[ 9,10,11,12, 1, 2, 3,23,24,25, 0],
+			[13,14,15,16,17,18,19,20,21,22,33],
+		],
+	}
+	return commandMenu;
+}
+
 function drawCanvas(ctx,cvs,x,y,s,f) {
 	var hex="0123456789ABCDEF";
 	for(var j=0;j<cvs.h;j++) {
@@ -193,7 +235,16 @@ function loadLevel(lvl) {
 	return level;
 }
 
-function drawLevel(ctx,lvl,spr) {
+function hideLevelInfo(ctx) {
+	ctx.fillStyle=palette[0];
+	ctx.fillRect(1,14*16,255,16);
+}
+
+function showLevelInfo(ctx,lvl,font) {
+	drawText(ctx,font,"LEVEL: "+currentLevel.toString()+" STARS: "+lvl.stars.toString(),3,14*16,2);
+}
+
+function drawLevel(ctx,lvl,spr,font) {
 	lvl.stars=0;
 	for(var j=0;j<lvl.h;j++) {
 		for(var i=0;i<lvl.w;i++) {
@@ -210,8 +261,6 @@ function drawLevel(ctx,lvl,spr) {
 
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,lvl.f+5);
 	drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
-
-	drawText(ctx,font,"LEVEL: "+currentLevel.toString()+" STARS: "+lvl.stars.toString(),3,14*16,2);
 }
 
 function drawBorder(ctx) {
@@ -308,27 +357,28 @@ function eraseCommandMenuCursor(ctx,menu,spr) {
 function drawIns(ctx,code,spr,x,y) {
 	var clr = code.d[y][x] & 0b11;
 	var ins = (code.d[y][x]>>2) & 0b11111;
+	var cmd = 0;
 
-  switch(ins) {
-    case 0b00000: cmd=32; break;
-    case 0b00001: cmd=9; break;
-    case 0b00010: cmd=10; break;
-    case 0b00011: cmd=11; break;
-    case 0b00100: cmd=12; break;
-    case 0b00101: cmd=23; break;
-    case 0b00110: cmd=24; break;
-    case 0b00111: cmd=25; break;
-    case 0b01000: cmd=13; break;
-    case 0b01001: cmd=14; break;
-    case 0b01010: cmd=15; break;
-    case 0b01011: cmd=16; break;
-    case 0b01100: cmd=17; break;
-    case 0b01101: cmd=18; break;
-    case 0b01110: cmd=19; break;
-    case 0b01111: cmd=20; break;
-    case 0b10000: cmd=21; break;
-    case 0b10001: cmd=22; break;
-  }
+	switch(ins) {
+		case 0b00000: cmd=32; break;
+		case 0b00001: cmd=9; break;
+		case 0b00010: cmd=10; break;
+		case 0b00011: cmd=11; break;
+		case 0b00100: cmd=12; break;
+		case 0b00101: cmd=23; break;
+		case 0b00110: cmd=24; break;
+		case 0b00111: cmd=25; break;
+		case 0b01000: cmd=13; break;
+		case 0b01001: cmd=14; break;
+		case 0b01010: cmd=15; break;
+		case 0b01011: cmd=16; break;
+		case 0b01100: cmd=17; break;
+		case 0b01101: cmd=18; break;
+		case 0b01110: cmd=19; break;
+		case 0b01111: cmd=20; break;
+		case 0b10000: cmd=21; break;
+		case 0b10001: cmd=22; break;
+	}
 
 	drawCanvas(ctx,spr,x*16+16+16,y*16,1,0);
 	drawCanvas(ctx,spr,x*16+16+16,y*16,1,clr);
@@ -412,20 +462,29 @@ function showHelp(ctx,font) {
       drawText(ctx,font,"SELECT [X] CHANGE [LEFT] [RIGHT]",3,15*16,1);
       break;
     case GameState.PLAY:
-      drawText(ctx,font,"CODE [X] RUN [O]",3,15*16,1);
+      drawText(ctx,font,"CODE [X] STEP [O]",3,15*16,1);
       break;
     case GameState.CODE:
       switch(codeState) {
         case CodeState.EDIT:
-      drawText(ctx,font,"MENU [O] PLAY [X]",3,15*16,1);
+      drawText(ctx,font,"PLAY [X] MENU [O]",3,15*16,1);
       drawText(ctx,font,"MOVE ARROWS",3,15*16+8,1);
         break;
         case CodeState.MENU:
-      drawText(ctx,font,"CODE [O] PLAY [X]",3,15*16,1);
+      drawText(ctx,font,"PLAY [X] CODE [O]",3,15*16,1);
       drawText(ctx,font,"MOVE ARROWS",3,15*16+8,1);
         break;
       }
       break;
+    case GameState.END:
+      drawText(ctx,font,"CODE [X]",3,15*16,1);
+      drawText(ctx,font,"END PROGRAM",3,15*16+8,1);
+        break;
+    case GameState.COMPLETE:
+      drawText(ctx,font,"SELECT [X]",3,15*16,1);
+      drawText(ctx,font,"COMPLETE",3,15*16+8,1);
+      break;
+    default: break;
   }
 }
 
@@ -442,11 +501,69 @@ function drawLevelTile(ctx,lvl,spr) {
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,lvl.f+5);
 }
 
-function pickStar(ctx,lvl) {
+function pickStar(ctx,lvl,font) {
 	var str = (lvl.d[lvl.y][lvl.x] >> 2) & 0b1;
 	if(str == 0) return;
 	lvl.d[lvl.y][lvl.x] &= 0b11;
 	lvl.stars--;
+	hideLevelInfo(ctx,lvl,font);
+	showLevelInfo(ctx,lvl,font);
+	if(lvl.stars==0) {
+		gameState=GameState.COMPLETE;
+		hideLevelInfo(ctx);
+		hideHelp(ctx);
+		showLevelInfo(ctx,level,font);
+		showHelp(ctx,font);
+	}
+}
+
+function hideFn(ctx,code) {
+	ctx.fillStyle=palette[0];
+	ctx.fillRect(1,code.fy,255,16);
+}
+
+function showFn(ctx,code,spr) {
+
+	drawCanvas(ctx,spr,code.fx,code.fy,1,26);
+	drawCanvas(ctx,spr,code.fx,code.fy,1,34);
+	drawCanvas(ctx,spr,code.fx+16,code.fy,1,26);
+	drawCanvas(ctx,spr,code.fx+16,code.fy,1,code.fn+13);
+
+	for(var i=0;i<code.d[code.fn].length;i++) {
+
+		var clr = code.d[code.fn][i] & 0b11;
+		var ins = (code.d[code.fn][i]>>2) & 0b11111;
+		var cmd = 0;
+
+		switch(ins) {
+			case 0b00000: cmd=32; break;
+			case 0b00001: cmd=9;  break;
+			case 0b00010: cmd=10; break;
+			case 0b00011: cmd=11; break;
+			case 0b00100: cmd=12; break;
+			case 0b00101: cmd=23; break;
+			case 0b00110: cmd=24; break;
+			case 0b00111: cmd=25; break;
+			case 0b01000: cmd=13; break;
+			case 0b01001: cmd=14; break;
+			case 0b01010: cmd=15; break;
+			case 0b01011: cmd=16; break;
+			case 0b01100: cmd=17; break;
+			case 0b01101: cmd=18; break;
+			case 0b01110: cmd=19; break;
+			case 0b01111: cmd=20; break;
+			case 0b10000: cmd=21; break;
+			case 0b10001: cmd=22; break;
+		}
+
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,0);
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,clr);
+		drawCanvas(ctx,spr,code.fx+i*16+16+16,code.fy,1,cmd);
+
+	}
+
+	drawGrid(ctx,code.w,1,code.fx+16+16,code.fy,16,palette[1]);
+	if(code.ip<=9) drawCanvas(ctx,spr,code.fx+code.ip*16+16+16,code.fy,1,31);
 }
 
 function runCode(ctx,code,lvl,spr) {
@@ -464,28 +581,28 @@ function runCode(ctx,code,lvl,spr) {
 					case 0:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.y--;
-						pickStar(ctx,lvl);
+						pickStar(ctx,lvl,font);
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 1:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.x++;
-						pickStar(ctx,lvl);
+						pickStar(ctx,lvl,font);
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 2:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.y++;
-						pickStar(ctx,lvl);
+						pickStar(ctx,lvl,font);
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 3:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.x--;
-						pickStar(ctx,lvl);
+						pickStar(ctx,lvl,font);
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
@@ -507,30 +624,98 @@ function runCode(ctx,code,lvl,spr) {
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00100:
-				break;
+    		if(callStack.length>0) {
+    		    var loc=callStack.pop();
+    		    code.fn=loc.fn;
+    		    code.ip=loc.ip;
+    	  	} else {
+    			gameState=GameState.END;
+    			hideHelp(ctx);
+    			showHelp(ctx,font);
+    		}
+				return;
 			case 0b00101:
-				console.log("paint red");
 				lvl.d[lvl.y][lvl.x]=1;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00110:
-				console.log("paint green");
 				lvl.d[lvl.y][lvl.x]=2;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00111:
-				console.log("paint blue");
 				lvl.d[lvl.y][lvl.x]=3;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
+			case 0b01000:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=0;
+			  code.ip=0;
+			  return;
+			case 0b01001:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=1;
+			  code.ip=0;
+			  return;
+			case 0b01010:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=2;
+			  code.ip=0;
+			  return;
+			case 0b01011:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=3;
+			  code.ip=0;
+			  return;
+			case 0b01100:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=4;
+			  code.ip=0;
+			  return;
+			case 0b01101:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=5;
+			  code.ip=0;
+			  return;
+			case 0b01110:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=6;
+			  code.ip=0;
+			  return;
+			case 0b01111:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=7;
+			  code.ip=0;
+			  return;
+			case 0b10000:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=8;
+			  code.ip=0;
+			  return;
+			case 0b10001:
+			  if(code.ip<9) callStack.push({fn:code.fn, ip:code.ip+1});
+			  code.fn=9;
+			  code.ip=0;
+			  return;
 			default: break;
 		}
 	}
 
-	if(code.ip<9) code.ip++;
+  code.ip++;
+
+	if(code.ip>9) {
+		if(callStack.length>0) {
+		    var loc=callStack.pop();
+		    code.fn=loc.fn;
+		    code.ip=loc.ip;
+	  	} else {
+			gameState=GameState.END;
+			hideHelp(ctx);
+			showHelp(ctx,font);
+		}
+	}
 
 }
 
@@ -547,6 +732,7 @@ function handleDirection(key) {
 		        		level=loadLevel(levels[currentLevel]);
 		        		clrscr(ctx);
 						drawLevel(ctx,level,sprites);
+						showLevelInfo(ctx,level,font);
 						showHelp(ctx,font);
 		        		drawPad(ctx,pad);
 		        	}
@@ -557,6 +743,7 @@ function handleDirection(key) {
 		        		level=loadLevel(levels[currentLevel]);
 		        		clrscr(ctx);
 						drawLevel(ctx,level,sprites);
+						showLevelInfo(ctx,level,font);
   						showHelp(ctx,font);
 		        		drawPad(ctx,pad);
 		        	}
@@ -570,7 +757,9 @@ function handleDirection(key) {
 		        	gameState=GameState.PLAY;
 				    clrscr(ctx);
 					drawLevel(ctx,level,sprites);
+					showLevelInfo(ctx,level,font);
 					showHelp(ctx,font);
+					showFn(ctx,code,sprites);
 					drawPad(ctx,pad);
 					break;
 				case 'X':
@@ -604,6 +793,8 @@ function handleDirection(key) {
 				case 'X':
 				case 'x':
 					runCode(ctx,code,level,sprites);
+					hideFn(ctx,code);
+					showFn(ctx,code,sprites);
 					break;
 				default: break;
 			}
@@ -639,8 +830,13 @@ function handleDirection(key) {
 							codeState=CodeState.EDIT;
 							gameState=GameState.PLAY;
 							clrscr(ctx);
+				        	level=loadLevel(levels[currentLevel]);
+				        	code.fn=0;
+				        	code.ip=0;
 							drawLevel(ctx,level,sprites);
+							showLevelInfo(ctx,level,font);
 							showHelp(ctx,font);
+							showFn(ctx,code,sprites);
 							drawPad(ctx,pad);
 							break;
 						case 'X':
@@ -688,9 +884,14 @@ function handleDirection(key) {
 							codeState=CodeState.EDIT;
 				        	gameState=GameState.PLAY;
 				        	clrscr(ctx);
-				        	drawPad(ctx,pad);
+				        	level=loadLevel(levels[currentLevel]);
+				        	code.fn=0;
+				        	code.ip=0;
 							drawLevel(ctx,level,sprites);
+							showLevelInfo(ctx,level,font);
 							showHelp(ctx,font);
+							showFn(ctx,code,sprites);
+				        	drawPad(ctx,pad);
 							break;
 						case 'X':
 						case 'x':
@@ -707,8 +908,47 @@ function handleDirection(key) {
 					break;
 				default: break;
 			}
-
 			break;
+		case GameState.END:
+			switch(key) {
+				case 'Z':
+				case 'z':
+		        	gameState=GameState.CODE;
+		    		codeState=CodeState.EDIT;
+		        	clrscr(ctx);
+		        	drawCode(ctx,code,sprites,0,0,1);
+		        	drawCodeCursor(ctx,code,sprites);
+		        	drawCommandMenu(ctx,commandMenu,sprites,0,14*16);
+		        	showHelp(ctx,font);
+		        	drawPad(ctx,pad);
+					break;
+				case 'X':
+				case 'x':
+				    break;
+				default: break;
+			}
+		  break;
+		case GameState.COMPLETE:
+			switch(key) {
+				case 'Z':
+				case 'z':
+					gameState=GameState.SELECT;
+					codeState=CodeState.EDIT;
+					clrscr(ctx);
+					level=loadLevel(levels[currentLevel]);
+					code = initCode();
+					commandMenu = initCommandMenu();
+					callStack = [];
+					drawLevel(ctx,level,sprites);
+					showLevelInfo(ctx,level,font);
+					showHelp(ctx,font);
+					drawPad(ctx,pad);
+					break;
+				case 'X':
+				case 'x':
+					break;
+	        	default: break;
+		  	}
 		default: break;
 	}
 }
@@ -742,6 +982,8 @@ const GameState = {
 	SELECT: "SELECT",
 	PLAY:   "PLAY",
 	CODE:   "CODE",
+	END:    "END",
+	COMPLETE: "COMPLETE",
 };
 
 const CodeState = {
@@ -755,48 +997,20 @@ var pointer = {
 	isDown:false
 };
 
+const handler = new PointerHandler(canvas);
+
 var gameState = GameState.SELECT;
 var codeState = CodeState.EDIT;
 
-const handler = new PointerHandler(canvas);
-
-var code = {
-	ox: 0,
-	oy: 0,
-	w: 10,
-	h: 10,
-	x:  0,
-	y:  0,
-	fn: 0,
-	ip: 0,
-	d: [
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-		[0,0,0,0,0,0,0,0,0,0],
-	],
-};
-
-var commandMenu = {
-	ox:     3,
-	oy: 11*16,
-	x: 0,
-	y: 0,
-	d: [
-		[ 9,10,11,12, 1, 2, 3,23,24,25, 0],
-		[13,14,15,16,17,18,19,20,21,22,33],
-	],
-}
+var code = initCode();
+var commandMenu = initCommandMenu();
+var callStack = [];
 
 var currentLevel=0;
 var level=loadLevel(levels[currentLevel]);
+
 clrscr(ctx);
 drawLevel(ctx,level,sprites);
+showLevelInfo(ctx,level,font);
 showHelp(ctx,font);
 drawPad(ctx,pad);
