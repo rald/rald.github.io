@@ -461,7 +461,7 @@ function showHelp(ctx,font) {
       drawText(ctx,font,"SELECT [X] CHANGE [LEFT] [RIGHT]",3,15*16,1);
       break;
     case GameState.PLAY:
-      drawText(ctx,font,"CODE [X] RUN [O]",3,15*16,1);
+      drawText(ctx,font,"CODE [X] STEP [O]",3,15*16,1);
       break;
     case GameState.CODE:
       switch(codeState) {
@@ -576,19 +576,16 @@ function runCode(ctx,code,lvl,spr) {
 			case 0b00100:
 				break;
 			case 0b00101:
-				console.log("paint red");
 				lvl.d[lvl.y][lvl.x]=1;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00110:
-				console.log("paint green");
 				lvl.d[lvl.y][lvl.x]=2;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 				break;
 			case 0b00111:
-				console.log("paint blue");
 				lvl.d[lvl.y][lvl.x]=3;
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
@@ -647,13 +644,9 @@ function runCode(ctx,code,lvl,spr) {
 		}
 	}
 
-	var ins=(code.d[code.fn][code.ip]>>2) & 0b11111;
-	while(code.ip<9 && ins==0b00000) {
+	if(code.ip<9) {
 		code.ip++;
-		ins=(code.d[code.fn][code.ip]>>2) & 0b11111;
-	}
-
-	if(code.ip>=9) {
+	} else {
 		if(callStack.length>0) {
 		    var loc=callStack.pop();
 		    code.fn=loc.fn;
