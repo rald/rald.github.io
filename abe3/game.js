@@ -594,7 +594,6 @@ function runCode(ctx,code,lvl,spr) {
 						break;
 					default: break;
 				}
-<<<<<<< HEAD
 
 				if(lvl.x<0 || lvl.y<0 || lvl.x>lvl.w-1 || lvl.y>lvl.h-1 || ((lvl.d[lvl.y][lvl.x] & 0b11) == 0b00)) {
 	          		gameState=GameState.END;
@@ -603,14 +602,6 @@ function runCode(ctx,code,lvl,spr) {
 					return;
 				}
 
-=======
-				if(lvl.x<0 || lvl.y<0 || lvl.x>lvl.w-1 || lvl.y>lvl.h-1 || ((lvl.d[lvl.y][lvl.x] & 0b11) == 0b00)) {
-          gameState=GameState.END;
-				  hideHelp(ctx);
-          showHelp(ctx,font);
-				  return;
-				}
->>>>>>> cede7574dfae14c1e567826d9e8d1d72a24843f1
 				pickStar(ctx,lvl,font);
 				drawLevelTile(ctx,lvl,spr);
 				drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
