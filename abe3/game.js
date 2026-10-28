@@ -120,6 +120,7 @@ function clrscr(ctx) {
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
+<<<<<<< HEAD
 
 function initCode() {
 	var code = {
@@ -161,6 +162,8 @@ function initCommandMenu() {
 	return commandMenu;
 }
 
+=======
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 function drawCanvas(ctx,cvs,x,y,s,f) {
 	var hex="0123456789ABCDEF";
 	for(var j=0;j<cvs.h;j++) {
@@ -234,6 +237,7 @@ function loadLevel(lvl) {
 	return level;
 }
 
+<<<<<<< HEAD
 
 function hideLevelInfo(ctx) {
 	ctx.fillStyle=palette[0];
@@ -245,6 +249,9 @@ function showLevelInfo(ctx,lvl,font) {
 }
 
 function drawLevel(ctx,lvl,spr,font) {
+=======
+function drawLevel(ctx,lvl,spr) {
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 	lvl.stars=0;
 	for(var j=0;j<lvl.h;j++) {
 		for(var i=0;i<lvl.w;i++) {
@@ -261,6 +268,11 @@ function drawLevel(ctx,lvl,spr,font) {
 
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,lvl.f+5);
 	drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
+<<<<<<< HEAD
+=======
+
+	drawText(ctx,font,"LEVEL: "+currentLevel.toString()+" STARS: "+lvl.stars.toString(),3,14*16,2);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 }
 
 function drawBorder(ctx) {
@@ -491,13 +503,20 @@ function drawLevelTile(ctx,lvl,spr) {
 	drawCanvas(ctx,spr,lvl.x*16,lvl.y*16,1,lvl.f+5);
 }
 
+<<<<<<< HEAD
 function pickStar(ctx,lvl,font) {
+=======
+function pickStar(ctx,lvl) {
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 	var str = (lvl.d[lvl.y][lvl.x] >> 2) & 0b1;
 	if(str == 0) return;
 	lvl.d[lvl.y][lvl.x] &= 0b11;
 	lvl.stars--;
+<<<<<<< HEAD
 	hideLevelInfo(ctx,lvl,font);
 	showLevelInfo(ctx,lvl,font);
+=======
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 }
 
 function runCode(ctx,code,lvl,spr) {
@@ -515,28 +534,44 @@ function runCode(ctx,code,lvl,spr) {
 					case 0:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.y--;
+<<<<<<< HEAD
 						pickStar(ctx,lvl,font);
+=======
+						pickStar(ctx,lvl);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 1:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.x++;
+<<<<<<< HEAD
 						pickStar(ctx,lvl,font);
+=======
+						pickStar(ctx,lvl);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 2:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.y++;
+<<<<<<< HEAD
 						pickStar(ctx,lvl,font);
+=======
+						pickStar(ctx,lvl);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
 					case 3:
 						eraseLevelTile(ctx,lvl,spr);
 						lvl.x--;
+<<<<<<< HEAD
 						pickStar(ctx,lvl,font);
+=======
+						pickStar(ctx,lvl);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 						drawLevelTile(ctx,lvl,spr);
 						drawGrid(ctx,lvl.w,lvl.h,0,0,16,palette[1]);
 						break;
@@ -609,7 +644,10 @@ function handleDirection(key) {
 		        		level=loadLevel(levels[currentLevel]);
 		        		clrscr(ctx);
 						drawLevel(ctx,level,sprites);
+<<<<<<< HEAD
 						showLevelInfo(ctx,level,font);
+=======
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
   						showHelp(ctx,font);
 		        		drawPad(ctx,pad);
 		        	}
@@ -623,7 +661,10 @@ function handleDirection(key) {
 		        	gameState=GameState.PLAY;
 				    clrscr(ctx);
 					drawLevel(ctx,level,sprites);
+<<<<<<< HEAD
 					showLevelInfo(ctx,level,font);
+=======
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 					showHelp(ctx,font);
 					drawPad(ctx,pad);
 					break;
@@ -693,11 +734,15 @@ function handleDirection(key) {
 							codeState=CodeState.EDIT;
 							gameState=GameState.PLAY;
 							clrscr(ctx);
+<<<<<<< HEAD
 				        	level=loadLevel(levels[currentLevel]);
 				        	code.fn=0;
 				        	code.ip=0;
 							drawLevel(ctx,level,sprites);
 							showLevelInfo(ctx,level,font);
+=======
+							drawLevel(ctx,level,sprites);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 							showHelp(ctx,font);
 							drawPad(ctx,pad);
 							break;
@@ -746,9 +791,13 @@ function handleDirection(key) {
 							codeState=CodeState.EDIT;
 				        	gameState=GameState.PLAY;
 				        	clrscr(ctx);
+<<<<<<< HEAD
 				        	level=loadLevel(levels[currentLevel]);
 				        	code.fn=0;
 				        	code.ip=0;
+=======
+				        	drawPad(ctx,pad);
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 							drawLevel(ctx,level,sprites);
 							showLevelInfo(ctx,level,font);
 							showHelp(ctx,font);
@@ -822,8 +871,44 @@ var codeState = CodeState.EDIT;
 
 const handler = new PointerHandler(canvas);
 
+<<<<<<< HEAD
 var code = initCode();
 var commandMenu = initCommandMenu();
+=======
+var code = {
+	ox: 0,
+	oy: 0,
+	w: 10,
+	h: 10,
+	x:  0,
+	y:  0,
+	fn: 0,
+	ip: 0,
+	d: [
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+	],
+};
+
+var commandMenu = {
+	ox:     3,
+	oy: 11*16,
+	x: 0,
+	y: 0,
+	d: [
+		[ 9,10,11,12, 1, 2, 3,23,24,25, 0],
+		[13,14,15,16,17,18,19,20,21,22,33],
+	],
+}
+>>>>>>> b8dfad526255984b76c720dac464259d9ac094f0
 
 var currentLevel=0;
 var level=loadLevel(levels[currentLevel]);
